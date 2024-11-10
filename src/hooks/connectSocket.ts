@@ -32,11 +32,12 @@ import { setMaxGameParticipants, setSharedGameData } from "@/Redux/features/shar
 import { updateScore } from "@/Redux/features/scoreSlice";
 import { addGuessedWord, setSoloGameString } from "@/Redux/features/individualPlayerDataSlice";
 
-// Singleton Socket instance
+// Singleton Socket instanc
 let socket: Socket | null = null;
 
 const initializeSocket = (): Socket => {
   const socketURL = import.meta.env.VITE_SOCKET_URL;
+  console.log("The socket URL is: ", socketURL);
   if (!socket) {
     socket = io(socketURL, { autoConnect: false });
   }
