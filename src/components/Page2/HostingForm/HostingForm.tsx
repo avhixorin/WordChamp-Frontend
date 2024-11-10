@@ -9,7 +9,6 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useRoomID from "@/hooks/getRoomId";
 import { setMaxGameParticipants } from "@/Redux/features/sharedGameDataSlice";
-
 const HostingForm: React.FC = () => {
   const dispatch = useDispatch();
   const { createRoomId } = useRoomID();
@@ -19,13 +18,15 @@ const HostingForm: React.FC = () => {
   const { user } = useSelector((state: RootState) => state.user);
   const validationSchema = Yup.object({
     roomPassword: Yup.string().required("Room password is required"),
-    roomId: Yup.string().required("Room ID is required"),
+    roomId: Yup.string().when("$isJoining", {
+      is: true,
+      then: (schema) => schema.required("Room ID is required"),
+    }),
     numOfPlayers: Yup.number()
       .min(2, "Minimum of 2 players required")
       .max(3, "Maximum of 3 players allowed")
       .required("Number of players is required"),
   });
-
   useEffect(() => {
     if (!roomId) {
       dispatch(setRoomId(createRoomId()));
@@ -68,7 +69,6 @@ const HostingForm: React.FC = () => {
             component="div"
             className="text-red-600"
           />
-
           <Field
             type="number"
             name="numOfPlayers"
@@ -82,7 +82,6 @@ const HostingForm: React.FC = () => {
             component="div"
             className="text-red-600"
           />
-
           <CTAButton
             type="submit"
             disabled={isSubmitting}
@@ -95,5 +94,4 @@ const HostingForm: React.FC = () => {
     </Formik>
   );
 };
-
 export default HostingForm;
