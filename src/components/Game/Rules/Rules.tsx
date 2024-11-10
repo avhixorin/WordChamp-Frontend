@@ -1,4 +1,4 @@
-import { ScrollText, Compass, X } from 'lucide-react';
+import { ScrollText, X } from 'lucide-react';
 import React, { useState } from 'react';
 import { rulesContent } from '@/constants/Rules';
 
@@ -10,7 +10,7 @@ const Rules: React.FC = () => {
     };
 
     // Initialize animatedText with contents from rulesContent
-    const [animatedText, setAnimatedText] = useState(rulesContent.map(rule => rule.content));
+    const [animatedText] = useState(rulesContent.map(rule => rule.content));
 
     return (
         <div className="absolute top-10 right-10 z-10">
