@@ -19,10 +19,7 @@ const HostingForm: React.FC = () => {
   const { user } = useSelector((state: RootState) => state.user);
   const validationSchema = Yup.object({
     roomPassword: Yup.string().required("Room password is required"),
-    roomId: Yup.string().when("$isJoining", {
-      is: true,
-      then: Yup.string().required("Room ID is required"),
-    }),
+    roomId: Yup.string().required("Room ID is required"),
     numOfPlayers: Yup.number()
       .min(2, "Minimum of 2 players required")
       .max(3, "Maximum of 3 players allowed")
