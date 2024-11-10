@@ -28,7 +28,7 @@ export default function Home() {
     dispatch(resetScores());
   },[dispatch]);
   useEffect(() => {
-    playBackgroundMusic('./sounds/background1.mp3');
+    playBackgroundMusic('/sounds/background1.mp3');
 
     return () => {
       stopBackgroundMusic();
@@ -55,7 +55,7 @@ export default function Home() {
             <button
               onClick={() => {
                 setMuted(false);
-                playBackgroundMusic('./sounds/background1.mp3');
+                playBackgroundMusic('/sounds/background1.mp3');
               }}
             >
               <VolumeX size={32} stroke="#fdfdfd" />
@@ -75,7 +75,7 @@ export default function Home() {
       </div>
       <div className="relative z-10 flex flex-col items-center justify-center min-h-full px-4">
         <motion.img
-          src="./images/title.png"
+          src="/images/title.png"
           initial={{ scale: 0 }}
           animate={{ scale: 1.1 }}
           transition={{
