@@ -36,8 +36,9 @@ import { addGuessedWord, setSoloGameString } from "@/Redux/features/individualPl
 let socket: Socket | null = null;
 
 const initializeSocket = (): Socket => {
+  const socketURL = import.meta.env.VITE_SOCKET_URL;
   if (!socket) {
-    socket = io("http://localhost:3000", { autoConnect: false });
+    socket = io(socketURL, { autoConnect: false });
   }
   return socket;
 };
