@@ -54,7 +54,7 @@ const useMistake = () => {
   const getNegativeScore = (primary: string, secondary: string) => {
     let score = 0;
     if (isGraveMistake(primary, secondary)) {
-      score -= 2;
+      score -= 5;
       toast("Almost there! You scored -2 this time", {
         icon: "😬",
         style: {
@@ -67,7 +67,7 @@ const useMistake = () => {
         },
       });
     } else if (isMinorMistake(primary, secondary)) {
-      score -= 1;
+      score -= 3;
       toast("Just a small setback! You scored -1 this time", {
         icon: "😅",
         style: {

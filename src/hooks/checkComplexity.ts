@@ -1,5 +1,3 @@
-// import useSocket from './connectSocket';
-
 const countVowels = (word: string) => word.match(/[aeiou]/gi)?.length || 0;
 const countConsonants = (word: string) => word.match(/[bcdfghjklmnpqrstvwxyz]/gi)?.length || 0;
 const countSyllables = (word: string) => {
@@ -9,7 +7,6 @@ const countSyllables = (word: string) => {
 };
 
 const useComplexity = () => {
-  // const { updateMultiPlayerUserScore } = useSocket();
 
   const getScore = (word: string) => {
 
@@ -29,7 +26,7 @@ const useComplexity = () => {
     if (syllables > 4) score += 1;
     score += uncommonLetters;
 
-    const finalScore = Math.min(Math.max(score, 1), 5);
+    const finalScore = Math.min(Math.max(score, 1), 5)*15;
     return finalScore;
   };
 
