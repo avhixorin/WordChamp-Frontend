@@ -1,50 +1,26 @@
-# React + TypeScript + Vite
+# WORD CHAMP 🎮
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Challenge your vocabulary skills and become the ultimate Word Champ!**
 
-Currently, two official plugins are available:
+Word Champ is an engaging word quiz game designed to test and improve your vocabulary in a fun, competitive environment. With a vibrant design and unique avatars, Word Champ combines learning and gaming, making each quiz session both exciting and educational!
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🌟 Features
+- **Dynamic Word Quizzes**: Sharpen your vocabulary through a series of challenging word puzzles.
+- **Customizable Avatars**: Choose from characters like **KageVortex**, **HikariBlade**, and **NamiStorm** for a personalized gaming experience.
+- **Real-Time Score Tracking**: See your scores update live as you advance through the challenges.
+- **Light Theme with Vibrant UI**: Enjoy a colorful and visually soothing game interface that keeps you focused on the game.
 
-## Expanding the ESLint configuration
+## 🚀 How to Play
+1. Join or host a game room and select your avatar.
+2. Choose your difficulty level and start the game.
+3. Answer the word puzzles as fast as you can to score higher!
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## 🛠 Tech Stack
+- **Frontend**: React, TypeScript
+- **Backend**: Node.js, Socket.io for real-time communication
+- **State Management**: Redux
 
-- Configure the top-level `parserOptions` property like this:
+## 🌐 Try It Out!
+**Play Now**: [word-champ.vercel.app](https://word-champ.vercel.app)
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+**Get In Touch**: Feel free to reach out with suggestions or feedback. Let’s make Word Champ even better!
