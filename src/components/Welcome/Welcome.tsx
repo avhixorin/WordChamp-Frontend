@@ -1,30 +1,46 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setUser } from "@/Redux/features/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
-import { Theme } from "@/types/types";
+import { GameMode } from "@/types/types";
 import useSound from "@/hooks/useSound";
 import { Volume, VolumeX } from "lucide-react";
 import CTAButton from "@/utils/CTAbutton/CTAbutton";
 import { AnimatePresence, motion } from "framer-motion";
+import { RootState } from "@/Redux/store/store";
+import { setSoloPlayerField } from "@/Redux/features/soloPlayerSlice";
+import { setMultiPlayerUserField } from "@/Redux/features/multiPlayerUserSlice";
 
 const avatars = [
-  { name: "Hikari-Blade", src: "./images/avatar4.png" },
-  { name: "Ryuu-Reign", src: "./images/avatar3.png" },
-  { name: "Nami-Storm", src: "./images/avatar2.png" },
-  { name: "Aki-Rei", src: "./images/avatar1.png" },
+  {
+    name: "Hikari-Blade",
+    src: "https://res.cloudinary.com/avhixorin/image/upload/v1731336213/avatar4_elomef.png",
+  },
+  {
+    name: "Ryuu-Reign",
+    src: "https://res.cloudinary.com/avhixorin/image/upload/v1731336212/avatar3_ahl1hl.png",
+  },
+  {
+    name: "Nami-Storm",
+    src: "https://res.cloudinary.com/avhixorin/image/upload/v1731336212/avatar2_qt1ogf.png",
+  },
+  {
+    name: "Aki-Rei",
+    src: "https://res.cloudinary.com/avhixorin/image/upload/v1731336218/avatar1_lw5cta.png",
+  },
 ];
 
 export default function Welcome() {
+  const { gameMode } = useSelector((state: RootState) => state.gameMode);
   const dispatch = useDispatch();
   const [isEntering, setIsEntering] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
   const [username, setUsername] = useState("@");
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
-  const { playEnterSound, playBackgroundMusic, stopBackgroundMusic } = useSound();
+  const { playEnterSound, playBackgroundMusic, stopBackgroundMusic } =
+    useSound();
   const [muted, setMuted] = useState(false);
 
   useEffect(() => {
@@ -41,27 +57,43 @@ export default function Welcome() {
     stopBackgroundMusic();
     playEnterSound();
     setIsEntering(true);
+    if (gameMode === GameMode.SOLO) {
+      dispatch(setSoloPlayerField({ key: "id", value: uuid() }));
+      dispatch(setSoloPlayerField({ key: "username", value: username }));
+      dispatch(setSoloPlayerField({ key: "avatar", value: selectedAvatar }));
+      navigate("/selection");
+    } else {
+      dispatch(setMultiPlayerUserField({ key: "id", value: uuid() }));
+      dispatch(setMultiPlayerUserField({ key: "username", value: username }));
+      dispatch(setMultiPlayerUserField({ key: "avatar", value: selectedAvatar }));
 
-    setTimeout(() => {
-      dispatch(
-        setUser({
-          id: uuid(),
-          username,
-          avatar: selectedAvatar,
-          theme: Theme.LIGHT,
-        })
-      );
-      navigate("/pg2");
-    }, 1500);
-  }, [stopBackgroundMusic, playEnterSound, dispatch, username, selectedAvatar, navigate]);
+      setTimeout(() => {
+        navigate("/pg2");
+      }, 1500);
+    }
+  }, [
+    stopBackgroundMusic,
+    playEnterSound,
+    dispatch,
+    username,
+    selectedAvatar,
+    navigate,
+    gameMode,
+  ]);
 
-  const handleKeydown = useCallback((e: KeyboardEvent) => {
-    if (e.key === "Enter") handleEnter();
-  }, [handleEnter]);
+  const handleKeydown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Enter") handleEnter();
+    },
+    [handleEnter]
+  );
 
   useEffect(() => {
     document.querySelector("html")?.addEventListener("keydown", handleKeydown);
-    return () => document.querySelector("html")?.removeEventListener("keydown", handleKeydown);
+    return () =>
+      document
+        .querySelector("html")
+        ?.removeEventListener("keydown", handleKeydown);
   }, [handleKeydown]);
 
   const avatarList = useMemo(() => avatars, []);
@@ -106,22 +138,26 @@ export default function Welcome() {
               <button
                 key={avatar.name}
                 className={`p-4 rounded-xl transition-transform duration-300 ease-in-out ${
-                  selectedAvatar === avatar.name
+                  selectedAvatar === avatar.src
                     ? "bg-neonBlue scale-110 shadow-lg shadow-neonBlue/50"
                     : "bg-white/10 backdrop-blur-sm hover:backdrop-blur-md hover:scale-105"
                 }`}
-                onClick={() => setSelectedAvatar(avatar.name)}
+                onClick={() => setSelectedAvatar(avatar.src)}
               >
                 <img
                   src={avatar.src}
                   alt={avatar.name}
                   className={`w-12 h-12 mx-auto ${
-                    selectedAvatar === avatar.name ? "opacity-100" : "opacity-70"
+                    selectedAvatar === avatar.name
+                      ? "opacity-100"
+                      : "opacity-70"
                   }`}
                 />
                 <p
                   className={`mt-2 text-center font-bold text-sm ${
-                    selectedAvatar === avatar.name ? "text-red-700" : "text-slate-700"
+                    selectedAvatar === avatar.name
+                      ? "text-red-700"
+                      : "text-slate-700"
                   }`}
                 >
                   {avatar.name}
@@ -181,9 +217,9 @@ export default function Welcome() {
             <motion.div
               className="w-0 h-0 bg-gradient-to-r from-[#E5E6AF] via-[#C3E1C1] to-[#B1DFCB] rounded-full"
               animate={{
-                width: '200vmax',
-                height: '200vmax',
-                transition: { duration: 1.5, ease: 'easeInOut' },
+                width: "200vmax",
+                height: "200vmax",
+                transition: { duration: 1.5, ease: "easeInOut" },
               }}
             />
           </motion.div>

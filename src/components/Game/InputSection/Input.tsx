@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
@@ -9,21 +9,43 @@ import CTAButton from "@/utils/CTAbutton/CTAbutton";
 import useValidate from "@/hooks/validateWord";
 import useComplexity from "@/hooks/checkComplexity";
 import useMistake from "@/hooks/checkNegatives";
-import useSocket from "@/hooks/connectSocket";
 import useCheckIfGuessed from "@/hooks/checkIfGuessed";
 import { RootState } from "@/Redux/store/store";
-import { addAnswer } from "@/Redux/features/answersSlice";
-import { addGuessedWord, addIndividualScore } from "@/Redux/features/individualPlayerDataSlice";
-import { updateScore } from "@/Redux/features/scoreSlice";
-import { GameMode, Verdict } from "@/types/types";
+import { GameMode, MultiplayerUser, SoloPlayer, Verdict } from "@/types/types";
+import { addSoloPlayerAnswer, updateSoloPlayerScore } from "@/Redux/features/soloPlayerSlice";
+import { addMultiPlayerUserAnswer, updateMultiPlayerUserScore } from "@/Redux/features/multiPlayerUserSlice";
+import { updatePlayerScoreAndAnswer } from "@/Redux/features/multiPlayerDataSlice";
 
 const InputSection: React.FC = () => {
   const dispatch = useDispatch();
-  const { roomId } = useSelector((state: RootState) => state.room);
-  const { gameMode } = useSelector((state: RootState) => state.individualPlayerData);
-  const { updateMultiPlayerUserScore } = useSocket();
-  const gameString = useSelector((state: RootState) => state.sharedGameData.currentGameString.toUpperCase().split(""));
-  const user = useSelector((state: RootState) => state.user.user);
+  const [user, setUser] = useState<SoloPlayer | MultiplayerUser>();
+  const { gameMode } = useSelector((state: RootState) => state.gameMode);
+  const soloUser = useSelector((state: RootState) => state.soloPlayer);
+  const multiPlayerUser = useSelector((state: RootState) => state.multiPlayerUser);
+
+  useEffect(() => {
+    if (gameMode === GameMode.SOLO) {
+      setUser(soloUser);
+    } else {
+      setUser(multiPlayerUser);
+    }
+  }, [gameMode, soloUser, multiPlayerUser]);
+
+  const { gameString: MultiPlayerString } = useSelector((state: RootState) => state.multiPlayerData);
+  const { gameString: SoloPlayerString } = useSelector((state: RootState) => state.soloPlayer);
+
+  const [gameString, setGameString] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Ensure strings are defined before calling toUpperCase
+    const updatedGameString =
+      gameMode === GameMode.MULTIPLAYER
+        ? MultiPlayerString ? MultiPlayerString.toLocaleUpperCase().split(" ") : []
+        : SoloPlayerString ? SoloPlayerString.toLocaleUpperCase().split(" ") : [];
+
+    setGameString(updatedGameString);
+  }, [gameMode, MultiPlayerString, SoloPlayerString]);
+
   const [inputWord, setInputWord] = useState<string>("");
 
   const filter = new Filter();
@@ -47,15 +69,22 @@ const InputSection: React.FC = () => {
     });
 
     const scorePenalty = -3;
-    if (gameMode === GameMode.MULTIPLAYER && user?.username) {
-      updateMultiPlayerUserScore({ playerId: user.username, score: scorePenalty, roomId });
-      dispatch(updateScore({ playerId: user?.username ?? "unknown", score: scorePenalty }));
-    } else if (gameMode === GameMode.SOLO) {
-      dispatch(addIndividualScore(scorePenalty));
+    if (gameMode === GameMode.SOLO) {
+      dispatch(updateSoloPlayerScore(scorePenalty));
+      dispatch(addSoloPlayerAnswer({ word: inputWord.toUpperCase(), verdict: Verdict.PROFANE, awardedPoints: scorePenalty }));
+    } else {
+      dispatch(updateMultiPlayerUserScore(scorePenalty));
+      dispatch(addMultiPlayerUserAnswer({ word: inputWord.toUpperCase(), verdict: Verdict.PROFANE, awardedPoints: scorePenalty }));
+      dispatch(updatePlayerScoreAndAnswer({
+        playerId: user ? user.username : "",
+        score: scorePenalty,
+        guessedWord: { word: inputWord.toUpperCase(), verdict: Verdict.PROFANE, awardedPoints: scorePenalty },
+      }));
     }
-    dispatch(addAnswer({ word: inputWord.toUpperCase(), verdict: Verdict.PROFANE }));
   };
-  const { checkIfGuessed} = useCheckIfGuessed();
+
+  const { checkIfGuessed } = useCheckIfGuessed();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -80,18 +109,32 @@ const InputSection: React.FC = () => {
         },
       });
 
-      if (gameMode === GameMode.MULTIPLAYER && user?.username) {
-        updateMultiPlayerUserScore({ playerId: user.username, score: finalScore, roomId, guessedWord: inputWord });
-        dispatch(updateScore({ playerId: user.username, score: finalScore }));
-      } else if (gameMode === GameMode.SOLO) {
-        dispatch(addIndividualScore(finalScore));
+      if (gameMode === GameMode.SOLO) {
+        dispatch(updateSoloPlayerScore(finalScore));
+        dispatch(addSoloPlayerAnswer({ word: inputWord.toUpperCase(), verdict: Verdict.CORRECT, awardedPoints: finalScore }));
+      } else {
+        dispatch(updateMultiPlayerUserScore(finalScore));
+        dispatch(addMultiPlayerUserAnswer({ word: inputWord.toUpperCase(), verdict: Verdict.CORRECT, awardedPoints: finalScore }));
+        dispatch(updatePlayerScoreAndAnswer({
+          playerId: user ? user.username : "",
+          score: finalScore,
+          guessedWord: { word: inputWord.toUpperCase(), verdict: Verdict.CORRECT, awardedPoints: finalScore },
+        }));
       }
-
-      dispatch(addAnswer({ word: inputWord.toUpperCase(), verdict: Verdict.RIGHT }));
-      dispatch(addGuessedWord(inputWord.toUpperCase()));
     } else {
-      getNegativeScore(gameString.join(""), inputWord);
-      dispatch(addAnswer({ word: inputWord.toUpperCase(), verdict: Verdict.WRONG }));
+      const negativeScore = getNegativeScore(gameString.join(""), inputWord);
+      if (gameMode === GameMode.SOLO) {
+        dispatch(updateSoloPlayerScore(negativeScore));
+        dispatch(addSoloPlayerAnswer({ word: inputWord.toUpperCase(), verdict: Verdict.INCORRECT, awardedPoints: negativeScore }));
+      } else {
+        dispatch(updateMultiPlayerUserScore(negativeScore));
+        dispatch(addMultiPlayerUserAnswer({ word: inputWord.toUpperCase(), verdict: Verdict.INCORRECT, awardedPoints: negativeScore }));
+        dispatch(updatePlayerScoreAndAnswer({
+          playerId: user ? user.username : "",
+          score: negativeScore,
+          guessedWord: { word: inputWord.toUpperCase(), verdict: Verdict.INCORRECT, awardedPoints: negativeScore },
+        }));
+      }
     }
     setInputWord("");
   };
@@ -111,22 +154,11 @@ const InputSection: React.FC = () => {
               />
             </motion.div>
             <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }} animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-              <CTAButton type="submit" disabled={false} label="Enter" colour="#3b82f6" onClick={() => {}}/>
+              <CTAButton type="submit" disabled={false} label="Enter" colour="#3b82f6" onClick={() => {}} />
             </motion.div>
           </CardContent>
         </form>
       </div>
-      <style>{`
-        .font-orbitron {
-          font-family: 'Super', sans-serif;
-        }
-
-        .glass-effect {
-          background: rgba(255, 255, 255, 0.1);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          backdrop-filter: blur(10px);
-        }
-      `}</style>
     </Card>
   );
 };

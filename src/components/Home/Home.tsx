@@ -5,13 +5,10 @@ import useSound from "@/hooks/useSound";
 import { Volume, VolumeX } from "lucide-react";
 import Rules from "../Game/Rules/Rules";
 import { useDispatch } from "react-redux";
-import { resetSharedGameData } from "@/Redux/features/sharedGameDataSlice";
-import { resetAnswers } from "@/Redux/features/answersSlice";
-import { resetRoom } from "@/Redux/features/roomSlice";
-import { clearMessages } from "@/Redux/features/messageSlice";
-import { resetUser } from "@/Redux/features/userSlice";
-import { resetIndividualPlayerData } from "@/Redux/features/individualPlayerDataSlice";
-import { resetScores } from "@/Redux/features/scoreSlice";
+import { resetSoloPlayer } from "@/Redux/features/soloPlayerSlice";
+import { resetGameMode } from "@/Redux/features/gameModeSlice";
+import { resetMultiPlayerData } from "@/Redux/features/multiPlayerDataSlice";
+import { resetMultiplayerUser } from "@/Redux/features/multiPlayerUserSlice";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -19,13 +16,10 @@ export default function Home() {
   const [isEntering, setIsEntering] = useState(false);
   const { playEnterSound, playBackgroundMusic, stopBackgroundMusic } = useSound();
   useEffect(() => {
-    dispatch(resetIndividualPlayerData());
-    dispatch(resetSharedGameData());
-    dispatch(resetAnswers());
-    dispatch(resetRoom());
-    dispatch(clearMessages());
-    dispatch(resetUser());
-    dispatch(resetScores());
+    dispatch(resetSoloPlayer());
+    dispatch(resetGameMode());
+    dispatch(resetMultiPlayerData());
+    dispatch(resetMultiplayerUser());
   },[dispatch]);
   useEffect(() => {
     playBackgroundMusic('/sounds/background1.mp3');
@@ -41,7 +35,7 @@ export default function Home() {
     playEnterSound();
 
     setTimeout(() => {
-      navigate("/welcome");
+      navigate("/mode");
     }, 1500);
   };
 

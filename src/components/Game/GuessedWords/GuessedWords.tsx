@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { RootState } from "@/Redux/store/store";
+import { GameMode } from "@/types/types";
 import React from "react";
 import { useSelector } from "react-redux";
 
@@ -18,7 +19,12 @@ const WordsCover: React.FC<WordProps> = ({ word }) => {
 
 
 const GuessedWords: React.FC = () => {
-  const guessedWords = useSelector((state: RootState) => state.individualPlayerData.guessedWords);
+  const { guessedWords: SoloPlayerGuessedWords } = useSelector((state: RootState) => state.soloPlayer);
+  const { guessedWords: MultiPlayerGuessedWords } = useSelector((state: RootState) => state.multiPlayerData);
+
+  const { gameMode } = useSelector((state: RootState) => state.gameMode);
+
+  const guessedWords = gameMode === GameMode.MULTIPLAYER ? MultiPlayerGuessedWords : SoloPlayerGuessedWords;
 
   return (
     <Card className="w-full flex flex-col items-center bg-transparent py-4 space-y-4 border-none shadow-none">

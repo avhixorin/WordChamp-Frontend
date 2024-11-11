@@ -16,8 +16,8 @@ const ChatSection: React.FC = () => {
   );
   const { sendMessage } = useSocket();
   const dispatch = useDispatch();
-  const { user } = useSelector((state: RootState) => state.user);
-  const { roomId } = useSelector((state: RootState) => state.room);
+  const user= useSelector((state: RootState) => state.multiPlayerUser);
+  const roomId = useSelector((state: RootState) => state.multiPlayerData.room?.roomId);
   const lastMessageRef = useRef<HTMLDivElement>(null);
 
   const validationSchema = Yup.object({
@@ -33,8 +33,8 @@ const ChatSection: React.FC = () => {
 
   const handleSendMessage = (values: { message: string }, resetForm: () => void) => {
     if (!user) return;
-    sendMessage({ message: values.message, sender: user, roomId: roomId });
-    dispatch(addMessage({ message: values.message, sender: user }));
+    sendMessage({ content: values.message, sender: user, roomId: roomId ?? '' });
+    dispatch(addMessage({ content: values.message, sender: user }));
     resetForm();
   };
 
@@ -62,7 +62,7 @@ const ChatSection: React.FC = () => {
                   className="p-2 mb-2 w-[85%] rounded-lg bg-white/20 backdrop-blur-md shadow-md border border-gray-300 dark:border-gray-600"
                 >
                   <p className="text-sm text-gray-800 font-semibold dark:text-gray-200">{msg.sender.username}</p>
-                  <p className="text-gray-700 dark:text-gray-300">{msg.message}</p>
+                  <p className="text-gray-700 dark:text-gray-300">{msg.content}</p>
                 </div>
               ))
             ) : (

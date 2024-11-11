@@ -1,17 +1,6 @@
-import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { RootState } from "@/Redux/store/store";
-import { updateScore } from "@/Redux/features/scoreSlice";
-import useSocket from "./connectSocket";
-import { GameMode } from "@/types/types";
-import { addIndividualScore } from "@/Redux/features/individualPlayerDataSlice";
 
 const useMistake = () => {
-  const dispatch = useDispatch();
-  const { roomId } = useSelector((state: RootState) => state.room);
-  const { gameMode } = useSelector((state:RootState) => state.individualPlayerData)  // Destructure gameMode here
-  const { updateMultiPlayerUserScore } = useSocket();
-  const user = useSelector((state: RootState) => state.user);
 
   const buildCharCount = (word: string) => {
     const charCount: { [key: string]: number } = {};
@@ -92,17 +81,7 @@ const useMistake = () => {
       });
     }
 
-    dispatch(updateScore({ playerId: user.user?.username ?? "unknown", score: score }));
-
-    if (gameMode === GameMode.MULTIPLAYER && user.user?.username) {
-      updateMultiPlayerUserScore({ playerId: user.user.username, score: score, roomId: roomId });
-
-      dispatch(updateScore({ playerId: user.user?.username ?? "unknown", score: score }));
-    }
-
-    if(gameMode === GameMode.SOLO){
-      dispatch(addIndividualScore(score));
-    }
+    return score;
   };
 
   return { getNegativeScore };

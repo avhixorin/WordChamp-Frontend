@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import AlphaContainer from "./AlphaContainer/AlphaContainer";
 import { useSelector } from "react-redux";
@@ -6,16 +6,20 @@ import { RootState } from "@/Redux/store/store";
 import { GameMode } from "@/types/types";
 
 const AlphabetSection: React.FC = () => {
-  const { gameMode, soloGameString } = useSelector((state: RootState) => state.individualPlayerData);
+  const { gameString: MultiPlayerString } = useSelector((state: RootState) => state.multiPlayerData);
+  const { gameMode } = useSelector((state: RootState) => state.gameMode);
+  const { gameString: SoloGameString } = useSelector((state: RootState) => state.soloPlayer);
 
-  // Safely extract the game string based on the game mode
-  const gameString = useSelector((state: RootState) => {
-    if (gameMode === GameMode.MULTIPLAYER) {
-      return state.sharedGameData.currentGameString?.toUpperCase().split("") || [];
-    } else {
-      return soloGameString?.toUpperCase().split("") || [];
-    }
-  });
+  const [gameString, setGameString] = useState<string[]>([]);
+
+  useEffect(() => {
+    const updatedString =
+      gameMode === GameMode.MULTIPLAYER
+        ? (MultiPlayerString ? MultiPlayerString.toUpperCase().split("") : [])
+        : (SoloGameString ? SoloGameString.toUpperCase().split("") : []);
+    
+    setGameString(updatedString);
+  }, [gameMode, MultiPlayerString, SoloGameString]); // Depend on relevant state variables
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -37,7 +41,7 @@ const AlphabetSection: React.FC = () => {
           <AlphaContainer key={index} alphabet={letter} />
         ))
       ) : (
-        <p className="text-gray-500">No game string available.</p> // Optional fallback message
+        <p className="text-gray-500">No game string available.</p> 
       )}
     </motion.div>
   );

@@ -1,164 +1,178 @@
+// Theme and RoomAction Enums
 export enum Theme {
   LIGHT = "light",
-  DARK = "dark"
+  DARK = "dark",
 }
 
-export enum Verdict {
-  RIGHT = "right",
-  WRONG = "wrong",
-  PROFANE = "profane"
-}
-
-export enum RoomStatus {
+export enum RoomAction {
   HOSTING = "hosting",
   JOINING = "joining",
-  NONE = "none",
+  IDLE = "idle",
 }
 
+// Difficulty and GameMode Enums
 export enum Difficulty {
   EASY = "easy",
   MEDIUM = "medium",
   HARD = "hard",
-  GOD = "god"
+  GOD = "god",
 }
 
 export enum GameMode {
   SOLO = "solo",
-  MULTIPLAYER = "multiplayer"
+  MULTIPLAYER = "multiplayer",
 }
 
-// User-related types
-export type User = {
+// Verdict Enum
+export enum Verdict {
+  CORRECT = "correct",
+  INCORRECT = "incorrect",
+  PROFANE = "profane",
+}
+
+// PowerUp Type
+export type PowerUp = {
+  name: string;
+  description: string;
+  count: number;
+}
+
+// Answer Type
+export type Answer = {
+  word: string;
+  verdict: Verdict;
+  awardedPoints: number;
+}
+
+// Room Type
+export type Room = {
+  roomId: string;
+  roomPassword: string;
+}
+
+// SoloPlayer Type
+export type SoloPlayer = {
+  id: string;
+  username: string;
+  avatar: string;
+  difficulty: Difficulty;
+  gameMode: GameMode;
+  score: number;
+  powerUps: PowerUp[];
+  gameString: string;
+  guessedWords: string[];
+  answers: Answer[];
+  theme: Theme;
+}
+
+// MultiplayerUser Type
+export type MultiplayerUser = {
   id: string;
   username: string;
   avatar: string;
   theme: Theme;
-};
-
-// Room-related types
-export type Room = {
-  roomId: string;
-  roomPassword: string;
-};
-
-export type RoomData = {
-  roomId: string;
-  password: string;
-  members: User[];
-  currentNoOfParticipants: number;
-  status: RoomStatus;
-};
-
-export type HostRoomData = {
-  room: Room;
-  user: User;
-};
-
-export type JoinRoomData = {
-  room: Room;
-  user: User;
-};
-
-// Messaging-related types
-export type MessageData = {
-  roomId: string;
-  content: string;
-};
-
-export type MessageResponse = {
-  message: string;
-  sender: User;
-};
-
-export type Message = {
-  message: string;
-  sender: User;
-  roomId: string;
-};
-
-// Gameplay-related types
-export type Answer = {
-  word: string;
-  verdict: Verdict;
-};
-
-export type SharedGameData = {
-  maxGameParticipants: number;
-  currentGameString: string;
-  difficulty: Difficulty;
-};
-
-export type IndividualGameData = {
-  powerUps: string[];
+  powerUps: PowerUp[];
+  answers: Answer[];
   score: number;
+  roomAction: RoomAction;
+}
+
+// MultiPlayerRoomData Type
+export type MultiPlayerRoomData = {
+  room: Room | null;
+  maxRoomPlayers: number;
+  gameString: string;
+  roomDifficulty: Difficulty;
+  players: MultiplayerUser[];
   guessedWords: string[];
-  soloGameString: string;
-  gameMode: GameMode;
-  isHosting: boolean;
-  isJoiningRoom: boolean;
 }
 
-export type Score = {
-  user: User;
-  score: number;
-}[]
+// Request & Response Types
 
-export type Words = {
-  words: string[];
-  guessedWords: string[];
-};
+// Room Hosting Request
+export type HostRoomRequest = {
+  room: Room;
+  maxRoomPlayers: number;
+  user: MultiplayerUser;
+}
 
-// API response types
-
-export type HostingResponse = {
+// Room Hosting Response
+export type HostRoomResponse = {
   statusCode: number;
   message: string;
   data: {
-    userCount: number;
+    roomId: string;
+    maxRoomPlayers: number;
+    participants: number;
   };
-};
-export type ScoreData = {
-  playerId: string;
-  score: number;
-  roomId: string;
-  guessedWord?: string;
 }
-export type UpdateScoreResponse = {
+
+// Room Joining Request
+export type JoinRoomRequest = {
+  room: Room;
+  user: MultiplayerUser;
+}
+
+// Room Joining Response
+export type JoinRoomResponse = {
   statusCode: number;
   message: string;
   data: {
-    user: User;
-    score: number;
-    guessedWord?: string;
+    maxRoomPlayers: number;
+    players: MultiplayerUser[];
   };
-};
-
-export type InitialGameData = {
-  maxGameParticipants: number;
-  currentGameString: string;
-  difficulty: Difficulty;
-  players: User[];
-  currentRound: number;
-  timer: number;
 }
 
-export type SoloGameStringResponse = {
+export type NewUserResponse = {
   statusCode: number;
   message: string;
   data: {
-    gameString: string;
+    user: MultiplayerUser;
   };
 }
 
+// Game Start Request
+export type StartGameRequest = {
+  gameData: MultiPlayerRoomData;
+}
+
+// Game Start Response
 export type StartGameResponse = {
   statusCode: number;
   message: string;
   data: {
-    gameData: SharedGameData;
+    gameData: MultiPlayerRoomData;
   };
 }
 
-export type TimerResponse = {
+// Score Update Request
+export type UpdateScoreRequest = {
+  roomId: string;
+  playerId: string;
+  score: number;
+  guessedWord?: Answer;
+}
+
+// Score Update Response
+export type UpdateScoreResponse = {
+  statusCode: number;
+  message: string;
+  data: {
+    playerId: string;
+    score: number;
+    guessedWord?: Answer;
+  };
+}
+
+// Solo Game Start Response
+export type SoloGameStartResponse = {
+  statusCode: number;
+  message: string;
+  data: SoloPlayer;
+}
+
+// Timer Update Response
+export type TimerUpdateResponse = {
   statusCode: number;
   message: string;
   data: {
@@ -166,26 +180,36 @@ export type TimerResponse = {
   };
 }
 
-export type JoiningResponse = {
+// Message Type
+export type MessageRequest = {
+  roomId: string;
+  sender: MultiplayerUser;
+  content: string;
+}
+
+export type Message = {
+  content: string;
+  sender: MultiplayerUser;
+}
+
+// Message Response
+export type MessageResponse = {
+  statusCode: number;
+  message: string;
+  data: Message;
+}
+
+// Leave Room Response
+export type LeaveRoomResponse = {
   statusCode: number;
   message: string;
   data: {
-    userCount: number;
-    allUsers: User[];
-    maxGameParticipants: number;
+    user: MultiplayerUser;
   };
-};
+}
 
-export type LeaveRoomResponse = {
+// General Response for actions like leaving room, ending game, etc.
+export type GeneralResponse = {
+  statusCode: number;
   message: string;
-  userId: string;
-};
-
-export type NoOfUsersResponse = {
-  userCount: number;
-};
-
-export type NewUserResponse = {
-  message: string;
-  user: User;
-};
+}

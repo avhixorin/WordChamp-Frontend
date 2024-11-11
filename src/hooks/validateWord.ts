@@ -5,11 +5,11 @@ import toast from "react-hot-toast";
 import { GameMode } from "@/types/types";
 
 const useValidate = (word: string) => {
-  const { currentGameString } = useSelector((state: RootState) => state.sharedGameData);
-  const { gameMode } = useSelector((state: RootState) => state.individualPlayerData);
-  const { soloGameString } = useSelector((state: RootState) => state.individualPlayerData);
+  const { gameString: MultiPlayerString } = useSelector((state: RootState) => state.multiPlayerData);
+  const { gameMode } = useSelector((state: RootState) => state.gameMode);
+  const { gameString: SoloGameString } = useSelector((state: RootState) => state.soloPlayer);
 
-  const gameString = gameMode === GameMode.MULTIPLAYER ? currentGameString : soloGameString;
+  const gameString = gameMode === GameMode.MULTIPLAYER ? MultiPlayerString : SoloGameString;
 
   const doesIncludes = (primary: string, secondary: string) => {
     if (primary && secondary) {

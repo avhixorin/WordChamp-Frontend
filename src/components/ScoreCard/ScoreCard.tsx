@@ -1,6 +1,6 @@
 import { RootState } from '@/Redux/store/store';
 import { GameMode } from '@/types/types';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 interface BadgeProps {
@@ -8,7 +8,7 @@ interface BadgeProps {
   username: string;
   score: number;
   roundedClass: string;
-  avatarSizeClass: string; 
+  avatarSizeClass: string;
 }
 
 const ScoreCardBadge: React.FC<BadgeProps> = ({ avatar, username, score, roundedClass, avatarSizeClass }) => {
@@ -28,49 +28,43 @@ const ScoreCardBadge: React.FC<BadgeProps> = ({ avatar, username, score, rounded
 };
 
 const ScoreCard: React.FC = () => {
-  const { scores } = useSelector((state: RootState) => state.scores);
-  const { user } = useSelector((state: RootState) => state.user);
-  const { score } = useSelector((state: RootState) => state.individualPlayerData);
-  const { gameMode } = useSelector((state: RootState) => state.individualPlayerData);
+  const { gameMode } = useSelector((state: RootState) => state.gameMode);
+  const soloUser = useSelector((state: RootState) => state.soloPlayer);
+  const { players } = useSelector((state: RootState) => state.multiPlayerData);
 
-  const avatars = [
-    { src: "./images/avatar4.png" },
-    { src: "./images/avatar3.png" },
-    { src: "./images/avatar2.png" },
-    { src: "./images/avatar1.png" },
-  ];
-
-  const getAvatar = (index: number) => avatars[index % avatars.length]?.src || '👤';
-
-  const avatarSizeClass = gameMode === GameMode.MULTIPLAYER ? "w-10 h-10" : "w-12 h-12";
+  const avatarSizeClass = useMemo(
+    () => (gameMode === GameMode.MULTIPLAYER ? "w-10 h-10" : "w-12 h-12"),
+    [gameMode]
+  );
 
   return (
     <div className="flex flex-col items-center w-full">
       {gameMode === GameMode.MULTIPLAYER ? (
-        scores.length > 0 ? (scores.map((scoreObj, index) => (
-          <ScoreCardBadge
-            key={scoreObj.user.id}
-            avatar={getAvatar(index)} 
-            username={scoreObj.user.username}
-            score={scoreObj.score}
-            roundedClass={
-              index === 0
-                ? 'rounded-t-lg'
-                : index === scores.length - 1
-                ? 'rounded-b-lg'
-                : ''
-            }
-            avatarSizeClass={avatarSizeClass}
-          />
-        ))) : (
+        players.length > 0 ? (
+          players.map((player, index) => (
+            <ScoreCardBadge
+              key={player.id}
+              avatar={player.avatar}
+              username={player.username}
+              score={player.score}
+              roundedClass={
+                index === 0
+                  ? 'rounded-t-lg'
+                  : index === players.length - 1
+                  ? 'rounded-b-lg'
+                  : ''
+              }
+              avatarSizeClass={avatarSizeClass}
+            />
+          ))
+        ) : (
           <p className="text-zinc-600 text-lg italic opacity-70">No scores to display</p>
         )
-        
       ) : (
         <ScoreCardBadge
-          avatar={getAvatar(typeof user?.avatar === 'number' ? user.avatar : 0) || "👤"}
-          username={user?.username || "You"}
-          score={score || 0} 
+          avatar={soloUser?.avatar || ""}
+          username={soloUser?.username || "You"}
+          score={soloUser?.score || 0}
           roundedClass="rounded-lg"
           avatarSizeClass={avatarSizeClass}
         />

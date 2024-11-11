@@ -19,45 +19,46 @@ import { rulesContent } from "@/constants/Rules";
 import { motion } from "framer-motion";
 import Profile from "./Profile/Profile";
 import { Difficulty, GameMode } from "@/types/types";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/store/store";
 import GameOver from "./GameOver/GameOver";
 import { useNavigate } from "react-router-dom";
-import { resetGuesses } from "@/Redux/features/individualPlayerDataSlice";
 
 const Game: React.FC = () => {
+  const { gameMode } = useSelector((state: RootState) => state.gameMode);
   const [open, setOpen] = useState(false);
   const [muted, setMuted] = useState(false);
   const [powerUpVisible, setPowerUpVisible] = useState(false);
   const [timer, setTimer] = useState<number>(1);
   const { playBackgroundMusic, stopBackgroundMusic } = useSound();
-  const { difficulty } = useSelector(
-    (state: RootState) => state.sharedGameData
-  );
-  const { gameMode } = useSelector(
-    (state: RootState) => state.individualPlayerData
-  );
-
+  const [difficulty, setDifficulty] = useState<Difficulty>(Difficulty.EASY);
+  const { difficulty: SoloModeDifficulty } = useSelector((state: RootState) => state.soloPlayer);
+  const { roomDifficulty: MultiplayerDifficulty } = useSelector((state: RootState) => state.multiPlayerData);
+  useEffect(() => {
+    if (gameMode === GameMode.MULTIPLAYER) {
+      setDifficulty(MultiplayerDifficulty);
+    } else {
+      setDifficulty(SoloModeDifficulty);
+    }
+  }, [gameMode, MultiplayerDifficulty, SoloModeDifficulty]);
   useEffect(() => {
     enableFullScreenOnKeyPress();
     return () => disableFullScreenOnKeyPress();
   }, []);
 
-  // Set initial timer based on difficulty and start countdown
   useEffect(() => {
     setTimer(getMaxTimeForDifficulty(difficulty));
     const interval = setInterval(() => {
       setTimer((prev) => Math.max(prev - 1, 0));
     }, 1000);
 
-    return () => clearInterval(interval); // Clean up interval on unmount
+    return () => clearInterval(interval);
   }, [difficulty]);
 
   useEffect(() => {
     if (timer <= 0) {
       handleGameOver();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timer]);
 
   const handleMuteToggle = () => {
@@ -70,9 +71,7 @@ const Game: React.FC = () => {
   };
 
   const togglePowerUpMenu = () => setPowerUpVisible((prev) => !prev);
-  const dispatch = useDispatch();
   const handleGameOver = () => {
-    dispatch(resetGuesses());
     setGameOver(true);
     console.log("Game over!");
   };

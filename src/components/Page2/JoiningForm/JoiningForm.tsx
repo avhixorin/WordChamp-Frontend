@@ -1,18 +1,18 @@
 import useSocket from "@/hooks/connectSocket";
-import { setRoomId, setRoomPassword, setRoomStatus } from "@/Redux/features/roomSlice";
 import { RootState } from "@/Redux/store/store";
-import { Room, RoomStatus } from "@/types/types";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from 'yup';
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CTAButton from "@/utils/CTAbutton/CTAbutton";
+import { setRoomAction } from "@/Redux/features/multiPlayerUserSlice";
+import { Room, RoomAction } from "@/types/types";
+import { setRoom, setRoomId, setRoomPassword } from "@/Redux/features/multiPlayerDataSlice";
 
 const JoiningForm: React.FC = () => {
   const dispatch = useDispatch();
   const { joinRoom } = useSocket();
-  const user = useSelector((state: RootState) => state.user.user);
-
+  const { multiPlayerUser: user } = useSelector((state: RootState) => state);
   const validationSchema = Yup.object({
     roomPassword: Yup.string().required("Room password is required"),
     roomId: Yup.string().required("Room ID is required"),
@@ -29,8 +29,9 @@ const JoiningForm: React.FC = () => {
             roomPassword: values.roomPassword,
           };
           console.log("Joining Room:", room);
-          joinRoom(room, user);
-          dispatch(setRoomStatus(RoomStatus.JOINING));
+          dispatch(setRoom(room))
+          joinRoom({room, user});
+          dispatch(setRoomAction(RoomAction.JOINING));
           dispatch(setRoomId(values.roomId));
           dispatch(setRoomPassword(values.roomPassword));
         } else {

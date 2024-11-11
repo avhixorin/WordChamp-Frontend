@@ -1,8 +1,4 @@
-import { updateScore } from '@/Redux/features/scoreSlice';
-import { RootState } from '@/Redux/store/store';
-import { useDispatch, useSelector } from 'react-redux';
-import useSocket from './connectSocket';
-import { GameMode } from '@/types/types';
+// import useSocket from './connectSocket';
 
 const countVowels = (word: string) => word.match(/[aeiou]/gi)?.length || 0;
 const countConsonants = (word: string) => word.match(/[bcdfghjklmnpqrstvwxyz]/gi)?.length || 0;
@@ -13,16 +9,9 @@ const countSyllables = (word: string) => {
 };
 
 const useComplexity = () => {
-  const dispatch = useDispatch();
-  const { updateMultiPlayerUserScore } = useSocket();
-  const { roomId } = useSelector((state: RootState) => state.room);
-  const { gameMode } = useSelector((state: RootState) => state.individualPlayerData);
-  const user = useSelector((state: RootState) => state.user);
+  // const { updateMultiPlayerUserScore } = useSocket();
 
   const getScore = (word: string) => {
-    if (gameMode === GameMode.SOLO) {
-      return 10; 
-    }
 
     if (!word || typeof word !== 'string') return 1;
 
@@ -41,16 +30,6 @@ const useComplexity = () => {
     score += uncommonLetters;
 
     const finalScore = Math.min(Math.max(score, 1), 5);
-
-    // Update the score if the game is in MULTIPLAYER mode
-    if (user.user) {
-      dispatch(updateScore({ playerId: user.user?.username, score: finalScore }));
-    }
-
-    if (user.user?.username) {
-      updateMultiPlayerUserScore({ playerId: user.user.username, score: finalScore, roomId: roomId });
-    }
-
     return finalScore;
   };
 

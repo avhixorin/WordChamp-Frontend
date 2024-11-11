@@ -9,34 +9,34 @@ import {
 } from "../ui/select";
 import { Difficulty, GameMode } from "@/types/types";
 import { useDispatch, useSelector } from "react-redux";
-import { setDifficulty } from "@/Redux/features/sharedGameDataSlice";
 import useSocket from "@/hooks/connectSocket";
 import { RootState } from "@/Redux/store/store";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
+import { setRoomDifficulty } from "@/Redux/features/multiPlayerDataSlice";
+import { setSoloPlayerField } from "@/Redux/features/soloPlayerSlice";
 
 const SelectionPage: React.FC = () => {
   const [localDifficulty, setLocalDifficulty] = useState<Difficulty>(Difficulty.EASY);
+  const soloUser = useSelector((state: RootState) => state.soloPlayer);
   const navigate = useNavigate();
-  const { startGame, getGameStringForSoloUser } = useSocket();
-  const { roomId } = useSelector((state: RootState) => state.room);
-  const gameData = useSelector((state: RootState) => state.sharedGameData);
-  const difficulty = useSelector((state: RootState) => state.sharedGameData.difficulty);
-  const { gameMode } = useSelector((state: RootState) => state.individualPlayerData);
+  const { startSoloGame,startGame } = useSocket();
+  const { room } = useSelector((state: RootState) => state.multiPlayerData);
+  const { gameMode } = useSelector((state: RootState) => state.gameMode);
   const dispatch = useDispatch();
+  const gameData = useSelector((state: RootState) => state.multiPlayerData);
 
   const handleClick = useCallback(() => {
-    console.log("difficulty before state update: ", difficulty);
-    dispatch(setDifficulty(localDifficulty));
-    if (gameMode === GameMode.MULTIPLAYER && roomId) {
-      startGame(roomId, { ...gameData, difficulty: localDifficulty });
+    dispatch(setRoomDifficulty(localDifficulty));
+    dispatch(setSoloPlayerField({key: "difficulty", value: localDifficulty}));
+    if (gameMode === GameMode.MULTIPLAYER && room) {
+      startGame({gameData});
     } else {
-      getGameStringForSoloUser(localDifficulty);
+      startSoloGame(soloUser);
       navigate("/game");
     }
-    console.log("Starting game with difficulty: ", localDifficulty);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [localDifficulty, gameMode, navigate, roomId, gameData, startGame, getGameStringForSoloUser]);
+    console.log("Starting game with difficulty:", localDifficulty);
+  }, [localDifficulty, gameMode, room, startGame, gameData, navigate, dispatch, soloUser, startSoloGame]);
 
   return (
     <div className="relative w-full h-full flex justify-center items-center overflow-hidden bg-game-bg bg-center bg-cover bg-no-repeat text-zinc-700">

@@ -14,11 +14,13 @@ import Memory from './components/Memory/Memory.tsx';
 import Page2 from './components/Page2/Page2.tsx';
 import WaitingRoom from './components/WaitingRoom/WaitingRoom.tsx';
 import SelectionPage from './components/SelectionPage/SelectionPage.tsx';
+import ModeSelection from './components/ModeSelection/ModeSelection.tsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App/>}>
       <Route index element={<Home />} />
+      <Route path='/mode' element={<ModeSelection />} />
       <Route path='/welcome' element={<Welcome/>}/>
       <Route path='/pg2' element={<Page2/>}/>
       <Route path='/game' element={<Game/>} />
