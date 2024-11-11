@@ -26,7 +26,6 @@ const SelectionPage: React.FC = () => {
   const dispatch = useDispatch();
   const gameData = useSelector((state: RootState) => state.multiPlayerData);
 
-  // UseEffect to dispatch changes when localDifficulty updates
   useEffect(() => {
     dispatch(setRoomDifficulty(localDifficulty));
     dispatch(setSoloPlayerField({ key: "difficulty", value: localDifficulty }));
