@@ -26,26 +26,25 @@ const SelectionPage: React.FC = () => {
   const dispatch = useDispatch();
   const gameData = useSelector((state: RootState) => state.multiPlayerData);
 
-  const [gameDataUpdated, setGameDataUpdated] = useState(gameData);
-
-  // Update gameDataUpdated when gameData changes
+  // UseEffect to dispatch changes when localDifficulty updates
   useEffect(() => {
-    setGameDataUpdated(gameData);
-  }, [gameData]);
-
-  const handleClick = useCallback(() => {
     dispatch(setRoomDifficulty(localDifficulty));
     dispatch(setSoloPlayerField({ key: "difficulty", value: localDifficulty }));
+  }, [localDifficulty, dispatch]);
 
+  const startGameBasedOnMode = useCallback(() => {
     if (gameMode === GameMode.MULTIPLAYER && room) {
-      startGame({ gameData: gameDataUpdated });
+      startGame({ gameData });
     } else {
       startSoloGame(soloUser);
       navigate("/game");
     }
+  }, [gameMode, room, gameData, startGame, startSoloGame, navigate, soloUser]);
 
+  const handleClick = useCallback(() => {
     console.log("Starting game with difficulty:", localDifficulty);
-  }, [localDifficulty, gameMode, room, startGame, gameDataUpdated, navigate, dispatch, soloUser, startSoloGame]);
+    startGameBasedOnMode();
+  }, [localDifficulty, startGameBasedOnMode]);
 
   return (
     <div className="relative w-full h-full flex justify-center items-center overflow-hidden bg-game-bg bg-center bg-cover bg-no-repeat text-zinc-700">
@@ -83,18 +82,12 @@ const SelectionPage: React.FC = () => {
               </Select>
             </div>
             <CTAButton
-            onClick={handleClick}
-            type="button"
-            disabled={false}
-            colour="#4f46e5"
-            label="Start Game"
+              onClick={handleClick}
+              type="button"
+              disabled={false}
+              colour="#4f46e5"
+              label="Start Game"
             />
-            {/* <Button 
-              onClick={handleClick} 
-              className="w-full max-w-lg bg-indigo-600 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              Start Game
-            </Button> */}
           </div>
         </CardContent>
       </div>
