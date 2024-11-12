@@ -1,4 +1,4 @@
-import { Answer, Difficulty, MultiPlayerRoomData, MultiplayerUser, Room } from "@/types/types";
+import { Answer, Difficulty, MultiPlayerRoomData, MultiplayerUser, Room, Verdict } from "@/types/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: MultiPlayerRoomData = {
@@ -56,19 +56,29 @@ const multiPlayerDataSlice = createSlice({
         },
         updatePlayerScoreAndAnswer: (
             state,
-            action: PayloadAction<{ playerId: string; score: number; guessedWord?: Answer }>
+            action: PayloadAction<{ playerId: string; score: number; guessedWord: Answer }>
         ) => {
             const player = state.players.find(player => player.id === action.payload.playerId);
+            
             if (player) {
-                player.score += action.payload.score;
-                if (action.payload.guessedWord) {
-                    player.answers.push(action.payload.guessedWord);
+                if (action.payload.guessedWord.verdict === Verdict.CORRECT) {
+                    const wordAlreadyGuessed = state.guessedWords.some(
+                        answer => answer === action.payload.guessedWord.word
+                    );
+
+                    if (!wordAlreadyGuessed) {
+                        player.answers.push(action.payload.guessedWord);
+                        state.guessedWords.push(action.payload.guessedWord.word);
+                    }
                 }
+                player.score += action.payload.score;
             }
-        },
+        },               
         addMultiPlayerGuessedWord: (state, action: PayloadAction<string>) => {
-            state.guessedWords.push(action.payload);
-        },
+            if (!state.guessedWords.includes(action.payload)) {
+                state.guessedWords.push(action.payload);
+            }
+        },        
         resetMultiPlayerData: () => initialState,
     },
 });

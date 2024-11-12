@@ -156,7 +156,10 @@ export type UpdateScoreRequest = {
 export type UpdateScoreResponse = {
   statusCode: number;
   message: string;
-  data: MultiPlayerRoomData;
+  data: {
+    player: MultiplayerUser;
+    guessedWord: Answer
+  };
 }
 
 // Solo Game Start Response

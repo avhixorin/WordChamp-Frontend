@@ -22,10 +22,12 @@ import {
 } from "@/types/types";
 import toast from "react-hot-toast";
 import {
+  addMultiPlayerGuessedWord,
   addPlayers,
   removePlayer,
   setMaxRoomPlayers,
   setMultiPlayerRoomData,
+  updatePlayerScoreAndAnswer,
 } from "@/Redux/features/multiPlayerDataSlice";
 import { useNavigate } from "react-router-dom";
 import { addMessage } from "@/Redux/features/messageSlice";
@@ -69,7 +71,6 @@ const useSocket = () => {
   };
 
   const handleJoiningResponse = (response: JoinRoomResponse) => {
-
     if (response?.statusCode === 200) {
       toast.success(response.message || "Joined room successfully!");
       if (roomStatus === RoomAction.JOINING)
@@ -131,6 +132,20 @@ const useSocket = () => {
     }
   };
 
+  const handleUpdateScoreResponse = (data: UpdateScoreResponse) => {
+    console.log("Inside the host room func");
+    if (data.statusCode === 200) {
+      toast.success(data.message);
+      dispatch(
+        updatePlayerScoreAndAnswer({
+          playerId: data.data.player.id,
+          score: data.data.guessedWord.awardedPoints,
+          guessedWord: data.data.guessedWord,
+        })
+      );
+    }
+  };
+
   const hostRoom = (request: HostRoomRequest) => {
     socket.emit(SOCKET_EVENTS.HOST_ROOM, request);
 
@@ -152,9 +167,7 @@ const useSocket = () => {
     socket.on(
       SOCKET_EVENTS.UPDATE_SCORE_RESPONSE,
       (data: UpdateScoreResponse) => {
-        if (data.statusCode === 200) {
-          dispatch(setMultiPlayerRoomData(data.data));
-        }
+        handleUpdateScoreResponse(data);
       }
     );
   };
@@ -180,9 +193,7 @@ const useSocket = () => {
     socket.on(
       SOCKET_EVENTS.UPDATE_SCORE_RESPONSE,
       (data: UpdateScoreResponse) => {
-        if (data.statusCode === 200) {
-          dispatch(setMultiPlayerRoomData(data.data));
-        }
+        handleUpdateScoreResponse(data);
       }
     );
   };
@@ -218,14 +229,12 @@ const useSocket = () => {
 
     socket.on(SOCKET_EVENTS.HOSTING_RESPONSE, handleHostingResponse);
     socket.on(SOCKET_EVENTS.JOINING_RESPONSE, handleJoiningResponse);
-    socket.on(
-      SOCKET_EVENTS.UPDATE_SCORE_RESPONSE,
-      (data: UpdateScoreResponse) => {
-        if (data.statusCode === 200) {
-          dispatch(setMultiPlayerRoomData(data.data));
-        }
-      }
-    );
+    // socket.on(
+    //   SOCKET_EVENTS.UPDATE_SCORE_RESPONSE,
+    //   (data: UpdateScoreResponse) => {
+    //     handleUpdateScoreResponse(data);
+    //   }
+    // );
     return () => {
       socket.off(SOCKET_EVENTS.HOSTING_RESPONSE, handleHostingResponse);
       socket.off(SOCKET_EVENTS.JOINING_RESPONSE, handleJoiningResponse);
@@ -237,7 +246,12 @@ const useSocket = () => {
         SOCKET_EVENTS.SOLO_GAME_START_RESPONSE,
         handleSoloGameStartResponse
       );
-      socket.off(SOCKET_EVENTS.UPDATE_SCORE_RESPONSE);
+      socket.off(
+        SOCKET_EVENTS.UPDATE_SCORE_RESPONSE,
+        (data: UpdateScoreResponse) => {
+          handleUpdateScoreResponse(data);
+        }
+      );
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
