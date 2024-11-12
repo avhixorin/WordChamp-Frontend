@@ -154,9 +154,9 @@ const InputSection: React.FC = () => {
 
   return (
     <Card className="w-full flex flex-col md:flex-row bg-transparent gap-4 justify-between items-center border-none shadow-none">
-      <div className="w-full p-6 rounded-lg transform hover:scale-105 transition-transform duration-300 ease-out">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-4">
-          <CardContent className="flex items-center gap-4">
+      <div className="w-full md:p-6 rounded-lg transform hover:scale-105 transition-transform duration-300 ease-out">
+        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4 mt-4">
+          <CardContent className="px-2 py-0 md:p-6 flex items-center gap-4">
             <motion.div
               className="flex-1 relative"
               animate={{ y: [0, -5, 0] }}

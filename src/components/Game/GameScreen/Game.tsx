@@ -23,6 +23,7 @@ const Game: React.FC = () => {
   const [difficulty, setDifficulty] = useState<Difficulty>(Difficulty.EASY);
   const { difficulty: SoloModeDifficulty } = useSelector((state: RootState) => state.soloPlayer);
   const { roomDifficulty: MultiplayerDifficulty } = useSelector((state: RootState) => state.multiPlayerData);
+  
   useEffect(() => {
     if (gameMode === GameMode.MULTIPLAYER) {
       setDifficulty(MultiplayerDifficulty);
@@ -30,6 +31,7 @@ const Game: React.FC = () => {
       setDifficulty(SoloModeDifficulty);
     }
   }, [gameMode, MultiplayerDifficulty, SoloModeDifficulty]);
+  
   useEffect(() => {
     enableFullScreenOnKeyPress();
     return () => disableFullScreenOnKeyPress();
@@ -77,9 +79,11 @@ const Game: React.FC = () => {
     dispatch(resetSoloPlayerGuessWords());
     startSoloGame(soloPlayer);
   }
+
   return (
-    <div className="relative flex justify-around items-center bg-game-bg1 bg-center bg-cover w-full p-4 h-full gap-2">
+    <div className="relative flex flex-col lg:flex-row justify-around items-center bg-game-bg1 bg-center bg-fill w-full p-2 lg:p-4 h-full gap-2 lg:gap-4 overflow-y-auto">
       <GameOver gameOver={gameOver} handleNewGame={handleNewGame} handleAnotherRound={handleAnotherRound}/> 
+      
       {/* Left Sidebar */}
       <SidebarLeft handleMuteToggle={handleMuteToggle} muted={muted} />
 
