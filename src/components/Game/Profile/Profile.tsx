@@ -30,7 +30,7 @@ const Profile: React.FC = () => {
   }, [gameMode, MultiplayerDifficulty, maxRoomPlayers, room, SoloDifficulty, soloPlayer, MultiplayerPlayers]);
 
   // Profile card classes based on game mode
-  const profileCardClass = gameMode === GameMode.MULTIPLAYER ? 'max-h-60' : 'max-h-48';
+  const profileCardClass = gameMode === GameMode.MULTIPLAYER ? 'max-h-72' : 'max-h-48';
   const profileContentClass = gameMode === GameMode.MULTIPLAYER ? '' : 'text-center';
 
   return (

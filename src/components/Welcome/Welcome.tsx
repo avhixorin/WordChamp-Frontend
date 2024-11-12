@@ -99,7 +99,7 @@ export default function Welcome() {
   const avatarList = useMemo(() => avatars, []);
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center p-4 overflow-hidden bg-game-bg bg-center bg-cover bg-white font-super overflow-y-auto">
+    <div className="relative w-full h-full flex items-center justify-center p-4 overflow-hidden bg-game-bg bg-center bg-cover bg-white font-super bg-no-repeat">
       <div className="absolute top-10 left-10 z-10">
         {muted ? (
           <button
@@ -121,9 +121,6 @@ export default function Welcome() {
           </button>
         )}
       </div>
-      <div className="absolute inset-0 opacity-70"></div>
-      <div className="absolute max-w-lg h-full bg-scroll bg-center bg-cover"></div>
-
       <div className="relative bg-transparent font-super rounded-3xl p-8 max-w-md w-full space-y-8 z-10 shadow-2xl shadow-neonAccent/40">
         <div className="text-4xl md:text-5xl font-bold text-center animate-bounce text-slate-100 dark:text-neonBlue">
           Welcome to WORD CHAMP!
