@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
@@ -11,50 +11,48 @@ import useComplexity from "@/hooks/checkComplexity";
 import useMistake from "@/hooks/checkNegatives";
 import useCheckIfGuessed from "@/hooks/checkIfGuessed";
 import { RootState } from "@/Redux/store/store";
-import { GameMode, MultiplayerUser, SoloPlayer, Verdict } from "@/types/types";
-import { addSoloPlayerAnswer, updateSoloPlayerScore } from "@/Redux/features/soloPlayerSlice";
-import { addMultiPlayerUserAnswer, updateMultiPlayerUserScore } from "@/Redux/features/multiPlayerUserSlice";
-import { updatePlayerScoreAndAnswer } from "@/Redux/features/multiPlayerDataSlice";
+import { Answer, GameMode, Verdict } from "@/types/types";
+import {
+  addSoloPlayerAnswer,
+  addSoloPlayerGuessWord,
+  updateSoloPlayerScore,
+} from "@/Redux/features/soloPlayerSlice";
+import {
+  addMultiPlayerGuessedWord,
+  updatePlayerScoreAndAnswer,
+} from "@/Redux/features/multiPlayerDataSlice";
+import useSocket from "@/hooks/connectSocket";
 
 const InputSection: React.FC = () => {
   const dispatch = useDispatch();
-  const [user, setUser] = useState<SoloPlayer | MultiplayerUser>();
+  const { updateMultiPlayerUserScore } = useSocket();
+  const filter = new Filter();
+  const [inputWord, setInputWord] = useState<string>("");
+  const validate = useValidate(inputWord);
+  const { getScore } = useComplexity();
+  const { getNegativeScore } = useMistake();
+  const { checkIfGuessed } = useCheckIfGuessed();
+
   const { gameMode } = useSelector((state: RootState) => state.gameMode);
   const soloUser = useSelector((state: RootState) => state.soloPlayer);
   const multiPlayerUser = useSelector((state: RootState) => state.multiPlayerUser);
+  const multiPlayerData = useSelector((state: RootState) => state.multiPlayerData);
 
-  useEffect(() => {
-    if (gameMode === GameMode.SOLO) {
-      setUser(soloUser);
-    } else {
-      setUser(multiPlayerUser);
-    }
-  }, [gameMode, soloUser, multiPlayerUser]);
+  // Derive user based on game mode with useMemo
+  const user = useMemo(() => (gameMode === GameMode.SOLO ? soloUser : multiPlayerUser), [
+    gameMode,
+    soloUser,
+    multiPlayerUser,
+  ]);
 
-  const { gameString: MultiPlayerString } = useSelector((state: RootState) => state.multiPlayerData);
-  const { gameString: SoloPlayerString } = useSelector((state: RootState) => state.soloPlayer);
+  // Derive game string based on game mode
+  const gameString = useMemo(() => {
+    const selectedGameString =
+      gameMode === GameMode.MULTIPLAYER ? multiPlayerData.gameString : soloUser.gameString;
+    return selectedGameString ? selectedGameString.toUpperCase().split(" ") : [];
+  }, [gameMode, multiPlayerData, soloUser]);
 
-  const [gameString, setGameString] = useState<string[]>([]);
-
-  useEffect(() => {
-    // Ensure strings are defined before calling toUpperCase
-    const updatedGameString =
-      gameMode === GameMode.MULTIPLAYER
-        ? MultiPlayerString ? MultiPlayerString.toLocaleUpperCase().split(" ") : []
-        : SoloPlayerString ? SoloPlayerString.toLocaleUpperCase().split(" ") : [];
-
-    setGameString(updatedGameString);
-  }, [gameMode, MultiPlayerString, SoloPlayerString]);
-
-  const [inputWord, setInputWord] = useState<string>("");
-
-  const filter = new Filter();
-  const validate = useValidate(inputWord.toLowerCase());
-  const { getScore } = useComplexity();
-  const { getNegativeScore } = useMistake();
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => setInputWord(e.target.value);
-
+  // Handle profanity detection and score update
   const handleProfanity = () => {
     toast(`Oh no! That's a profane word!`, {
       icon: "🤬",
@@ -69,33 +67,61 @@ const InputSection: React.FC = () => {
     });
 
     const scorePenalty = -3;
+    const guessedWordData: Answer = {
+      word: inputWord.toUpperCase(),
+      verdict: Verdict.PROFANE,
+      awardedPoints: scorePenalty,
+    };
+
+    updateScoreAndGuesses(scorePenalty, guessedWordData);
+  };
+
+  // Update score and guesses for both modes
+  const updateScoreAndGuesses = (score: number, guessedWordData: Answer) => {
     if (gameMode === GameMode.SOLO) {
-      dispatch(updateSoloPlayerScore(scorePenalty));
-      dispatch(addSoloPlayerAnswer({ word: inputWord.toUpperCase(), verdict: Verdict.PROFANE, awardedPoints: scorePenalty }));
+      dispatch(updateSoloPlayerScore(score));
+      dispatch(addSoloPlayerAnswer(guessedWordData));
+      dispatch(addSoloPlayerGuessWord(inputWord.toUpperCase()));
     } else {
-      dispatch(updateMultiPlayerUserScore(scorePenalty));
-      dispatch(addMultiPlayerUserAnswer({ word: inputWord.toUpperCase(), verdict: Verdict.PROFANE, awardedPoints: scorePenalty }));
-      dispatch(updatePlayerScoreAndAnswer({
-        playerId: user ? user.username : "",
-        score: scorePenalty,
-        guessedWord: { word: inputWord.toUpperCase(), verdict: Verdict.PROFANE, awardedPoints: scorePenalty },
-      }));
+      dispatch(
+        updatePlayerScoreAndAnswer({
+          playerId: user?.id ?? "",
+          score,
+          guessedWord: guessedWordData,
+        })
+      );
+      dispatch(addMultiPlayerGuessedWord(inputWord.toUpperCase()));
+      emitMultiPlayerScoreChange(guessedWordData);
     }
   };
 
-  const { checkIfGuessed } = useCheckIfGuessed();
+  const emitMultiPlayerScoreChange = (guessedWord: Answer) => {
+    updateMultiPlayerUserScore({
+      roomData: multiPlayerData,
+      player: multiPlayerUser,
+      guessedWord: guessedWord,
+    });
+  };
 
+  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (filter.isProfane(inputWord)) {
       handleProfanity();
+      setInputWord("");
       return;
     }
 
     const isValid = await validate();
-    if (isValid && !checkIfGuessed(inputWord.toUpperCase())) {
+    const guessedWord = inputWord.toUpperCase();
+
+    if (isValid && !checkIfGuessed(guessedWord)) {
       const finalScore = getScore(inputWord.toLowerCase());
+      const correctWordData: Answer = {
+        word: guessedWord,
+        verdict: Verdict.CORRECT,
+        awardedPoints: finalScore,
+      };
 
       toast(`That's correct! You’ve earned +${finalScore} points!`, {
         icon: "🎉",
@@ -109,33 +135,18 @@ const InputSection: React.FC = () => {
         },
       });
 
-      if (gameMode === GameMode.SOLO) {
-        dispatch(updateSoloPlayerScore(finalScore));
-        dispatch(addSoloPlayerAnswer({ word: inputWord.toUpperCase(), verdict: Verdict.CORRECT, awardedPoints: finalScore }));
-      } else {
-        dispatch(updateMultiPlayerUserScore(finalScore));
-        dispatch(addMultiPlayerUserAnswer({ word: inputWord.toUpperCase(), verdict: Verdict.CORRECT, awardedPoints: finalScore }));
-        dispatch(updatePlayerScoreAndAnswer({
-          playerId: user ? user.username : "",
-          score: finalScore,
-          guessedWord: { word: inputWord.toUpperCase(), verdict: Verdict.CORRECT, awardedPoints: finalScore },
-        }));
-      }
+      updateScoreAndGuesses(finalScore, correctWordData);
     } else {
-      const negativeScore = getNegativeScore(gameString.join(""), inputWord);
-      if (gameMode === GameMode.SOLO) {
-        dispatch(updateSoloPlayerScore(negativeScore));
-        dispatch(addSoloPlayerAnswer({ word: inputWord.toUpperCase(), verdict: Verdict.INCORRECT, awardedPoints: negativeScore }));
-      } else {
-        dispatch(updateMultiPlayerUserScore(negativeScore));
-        dispatch(addMultiPlayerUserAnswer({ word: inputWord.toUpperCase(), verdict: Verdict.INCORRECT, awardedPoints: negativeScore }));
-        dispatch(updatePlayerScoreAndAnswer({
-          playerId: user ? user.username : "",
-          score: negativeScore,
-          guessedWord: { word: inputWord.toUpperCase(), verdict: Verdict.INCORRECT, awardedPoints: negativeScore },
-        }));
-      }
+      const negativeScore = getNegativeScore(gameString.join(" "), inputWord);
+      const incorrectWordData: Answer = {
+        word: guessedWord,
+        verdict: Verdict.INCORRECT,
+        awardedPoints: negativeScore,
+      };
+
+      updateScoreAndGuesses(negativeScore, incorrectWordData);
     }
+
     setInputWord("");
   };
 
@@ -144,17 +155,33 @@ const InputSection: React.FC = () => {
       <div className="w-full p-6 rounded-lg transform hover:scale-105 transition-transform duration-300 ease-out">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-4">
           <CardContent className="flex items-center gap-4">
-            <motion.div className="flex-1 relative" animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
+            <motion.div
+              className="flex-1 relative"
+              animate={{ y: [0, -5, 0] }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+            >
               <Input
                 type="text"
                 placeholder="Enter a word..."
+                aria-label="Input word"
                 className="w-full py-2 px-4 rounded-md text-lg font-semibold text-gray-800 shadow-md bg-gradient-to-r from-white/80 to-white/60 backdrop-blur-md focus:outline-none focus:ring-4 focus:ring-blue-400/50"
                 value={inputWord.toUpperCase()}
-                onChange={handleInputChange}
+                onChange={(e) => setInputWord(e.target.value.toLowerCase())}
               />
             </motion.div>
-            <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }} animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-              <CTAButton type="submit" disabled={false} label="Enter" colour="#3b82f6" onClick={() => {}} />
+            <motion.div
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.95 }}
+              animate={{ y: [0, -3, 0] }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+            >
+              <CTAButton
+                type="submit"
+                disabled={false}
+                label="Enter"
+                colour="#3b82f6"
+                onClick={() => {}}
+              />
             </motion.div>
           </CardContent>
         </form>

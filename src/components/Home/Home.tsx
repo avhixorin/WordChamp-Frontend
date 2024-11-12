@@ -9,6 +9,7 @@ import { resetSoloPlayer } from "@/Redux/features/soloPlayerSlice";
 import { resetGameMode } from "@/Redux/features/gameModeSlice";
 import { resetMultiPlayerData } from "@/Redux/features/multiPlayerDataSlice";
 import { resetMultiplayerUser } from "@/Redux/features/multiPlayerUserSlice";
+import { clearMessages } from "@/Redux/features/messageSlice";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -20,6 +21,7 @@ export default function Home() {
     dispatch(resetGameMode());
     dispatch(resetMultiPlayerData());
     dispatch(resetMultiplayerUser());
+    dispatch(clearMessages());
   },[dispatch]);
   useEffect(() => {
     playBackgroundMusic('/sounds/background1.mp3');

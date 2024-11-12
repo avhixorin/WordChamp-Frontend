@@ -68,7 +68,7 @@ const Game: React.FC = () => {
   };
   return (
     <div className="relative flex justify-around items-center bg-game-bg1 bg-center bg-cover w-full p-4 h-full gap-2">
-      <GameOver gameOver={gameOver} handleNewGame={handleNewGame} />
+      <GameOver gameOver={gameOver} handleNewGame={handleNewGame} /> 
       {/* Left Sidebar */}
       <SidebarLeft handleMuteToggle={handleMuteToggle} muted={muted} />
 

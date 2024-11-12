@@ -147,21 +147,16 @@ export type StartGameResponse = {
 
 // Score Update Request
 export type UpdateScoreRequest = {
-  roomId: string;
-  playerId: string;
-  score: number;
-  guessedWord?: Answer;
+  roomData: MultiPlayerRoomData;
+  player: MultiplayerUser;
+  guessedWord: Answer;
 }
 
 // Score Update Response
 export type UpdateScoreResponse = {
   statusCode: number;
   message: string;
-  data: {
-    playerId: string;
-    score: number;
-    guessedWord?: Answer;
-  };
+  data: MultiPlayerRoomData;
 }
 
 // Solo Game Start Response
