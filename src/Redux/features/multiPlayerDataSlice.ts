@@ -66,7 +66,7 @@ const multiPlayerDataSlice = createSlice({
                 }
             }
         },
-        addGuessedWord: (state, action: PayloadAction<string>) => {
+        addMultiPlayerGuessedWord: (state, action: PayloadAction<string>) => {
             state.guessedWords.push(action.payload);
         },
         resetMultiPlayerData: () => initialState,
@@ -82,7 +82,7 @@ export const {
     addPlayers, 
     removePlayer, 
     updatePlayerScoreAndAnswer, 
-    addGuessedWord,
+    addMultiPlayerGuessedWord,
     resetMultiPlayerData,
     setRoomId, 
     setRoomPassword,
