@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import "../../index.css";
+import "../../../index.css";
 import useSound from "@/hooks/useSound";
 import { Difficulty, GameMode } from "@/types/types";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/store/store";
-import GameOver from "./GameOver/GameOver";
+import GameOver from "../GameOver/GameOver";
 import { useNavigate } from "react-router-dom";
-import SidebarLeft from "./GameScreen/LeftSideBar/LeftSideBar";
-import MainGameSection from "./GameScreen/Mid/Mid";
-import SidebarRight from "./GameScreen/RightSideBar/RightSideBar";
+import SidebarLeft from "./LeftSideBar/LeftSideBar";
+import MainGameSection from "./Mid/Mid";
+import SidebarRight from "./RightSideBar/RightSideBar";
 
 const Game: React.FC = () => {
   const { gameMode } = useSelector((state: RootState) => state.gameMode);

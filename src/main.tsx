@@ -5,7 +5,7 @@ import './index.css';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 import Welcome from './components/Welcome/Welcome.tsx';
 import Home from './components/Home/Home.tsx';
-import Game from './components/Game/Game.tsx';
+import Game from './components/Game/GameScreen/Game.tsx';
 
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';

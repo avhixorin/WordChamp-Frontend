@@ -32,12 +32,15 @@ const RulesSection = ({
                   </div>
                 ))}
               </div>
+              <div className="w-full flex justify-end">
+
               <button
                 onClick={() => setOpen(false)}
-                className="w-10 h-10 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-500 transition-colors duration-200"
+                className=" bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-500 transition-colors duration-200 mt-4 p-2"
               >
                 <X className="w-6 h-6" />
               </button>
+              </div>
             </div>
           </div>
         </div>
