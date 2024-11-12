@@ -55,7 +55,7 @@ const useMistake = () => {
     let score = 0;
     if (isGraveMistake(primary, secondary)) {
       score -= 5;
-      toast("Almost there! You scored -2 this time", {
+      toast(`Almost there! You scored ${score} this time`, {
         icon: "😬",
         style: {
           background: "rgba(255, 255, 0, 0.1)",
@@ -68,7 +68,7 @@ const useMistake = () => {
       });
     } else if (isMinorMistake(primary, secondary)) {
       score -= 3;
-      toast("Just a small setback! You scored -1 this time", {
+      toast(`Just a small setback! You scored ${score} this time`, {
         icon: "😅",
         style: {
           background: "rgba(255, 165, 0, 0.1)",
