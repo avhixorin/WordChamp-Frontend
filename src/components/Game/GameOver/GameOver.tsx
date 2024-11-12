@@ -21,7 +21,7 @@ const GameOver: React.FC<GameOverProps> = ({ gameOver, handleNewGame, handleAnot
   }, [gameOver]);
 
   return (
-    <div>
+    <div className="font-super">
       <AnimatePresence>
         {gameOver && !showRanking && (
           <motion.div

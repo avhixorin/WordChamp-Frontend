@@ -13,13 +13,13 @@ const Rules: React.FC = () => {
   const [animatedText] = useState(rulesContent.map((rule) => rule.content));
 
   return (
-    <div className="absolute top-10 right-10 z-10">
+    <div className="absolute top-10 right-10 z-10 font-super">
       {!open ? (
         <button onClick={handleToggle}>
           <ScrollText size={32} className="text-white" />
         </button>
       ) : (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-20">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-20 font-super">
           <div className="bg-[url('/placeholder.svg?height=600&width=400')] bg-cover bg-center w-full max-w-2xl h-[80vh] rounded-lg shadow-2xl overflow-hidden relative animate-unfurl">
             <div className="absolute inset-0 bg-stone-100 bg-opacity-90 "></div>
             <div className="relative h-full flex flex-col p-6 overflow-hidden custom-scrollbar">

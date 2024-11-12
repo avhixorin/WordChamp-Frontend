@@ -8,7 +8,7 @@ const RulesSection = ({
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   }) => (
-    <div className="w-full flex flex-col items-end gap-4">
+    <div className="w-full flex flex-col items-end gap-4 font-super">
       {!open ? (
         <button onClick={() => setOpen(true)} aria-label="Show Rules">
           <ScrollText size={32} className="text-white" />
@@ -21,7 +21,7 @@ const RulesSection = ({
               <h2 className="text-3xl font-bold mb-4 text-center text-amber-800 drop-shadow-md">
                 WordChamp Rules
               </h2>
-              <div className="flex-grow overflow-y-auto custom-scrollbar">
+              <div className="flex-grow overflow-y-auto custom-scrollbar font-super">
                 {rulesContent.map((rule, index) => (
                   <div key={index} className="mb-6">
                     <h3 className="text-xl font-bold mb-2 flex items-center gap-2 text-amber-700">

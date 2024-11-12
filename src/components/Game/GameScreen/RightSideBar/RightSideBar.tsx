@@ -21,7 +21,7 @@ const SidebarRight = ({
   timerColor: string;
   gameMode: GameMode;
 }) => (
-  <aside className="w-full md:max-w-96 h-full py-4 px-2 md:px-6 rounded-lg flex flex-col md:flex-col justify-between items-center md:items-end gap-4">
+  <aside className="w-full md:max-w-96 h-full py-4 px-2 md:px-6 rounded-lg flex flex-col md:flex-col justify-between items-center md:items-end gap-4 font-super">
     {/* Rules and Power-Up Sections */}
     <div className="w-full flex flex-col gap-4">
       <RulesSection open={open} setOpen={setOpen} />

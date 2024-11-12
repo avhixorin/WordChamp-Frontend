@@ -49,7 +49,7 @@ const Memory: React.FC = () => {
   };
 
   return (
-    <div className="h-full flex flex-col items-center justify-center bg-gray-100">
+    <div className="h-full flex flex-col items-center justify-center bg-gray-100 font-super">
       <h1 className="text-4xl mb-4 font-bold">Memory Tile Game</h1>
       <div className="grid grid-cols-4 gap-4">
         {tiles.map((icon, index) => (

@@ -43,7 +43,7 @@ export default function Home() {
 
   const [muted, setMuted] = useState(false);
   return (
-    <div className="relative w-full h-full flex justify-center items-center overflow-hidden bg-game-bg bg-center bg-cover bg-no-repeat">
+    <div className="relative w-full h-full flex justify-center items-center overflow-hidden bg-game-bg bg-center bg-cover bg-no-repeat overflow-y-auto font-super">
 
       <div className="absolute top-10 left-10 z-10">
         {

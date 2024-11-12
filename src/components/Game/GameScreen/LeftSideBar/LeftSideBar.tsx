@@ -9,7 +9,7 @@ const SidebarLeft = ({
   handleMuteToggle: () => void;
   muted: boolean;
 }) => (
-  <aside className="w-full max-w-96 h-full py-6 rounded-lg flex flex-col justify-between items-center">
+  <aside className="w-full max-w-96 h-full py-6 rounded-lg flex flex-col justify-between items-center font-super">
     <div className="md:ml-10 mb-4 md:mb-0 w-full">
       <button onClick={handleMuteToggle} aria-label="Toggle Mute">
         {muted ? (

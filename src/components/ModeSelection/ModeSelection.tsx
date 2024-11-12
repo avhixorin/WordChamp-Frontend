@@ -13,7 +13,7 @@ const ModeSelection: React.FC = () => {
     navigate("/welcome")
   };
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-game-bg bg-center bg-no-repeat p-4 gap-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-game-bg bg-center bg-no-repeat p-4 gap-8 font-super">
       <h1 className="text-3xl font-bold text-white">Mode Selection</h1>
       <div className="flex gap-4">
         <CTAButton

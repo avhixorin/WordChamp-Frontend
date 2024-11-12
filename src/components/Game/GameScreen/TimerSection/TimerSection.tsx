@@ -18,7 +18,7 @@ type TimerDisplayProps = {
     return (
       <div
         aria-label="Timer display"
-        className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-[rgba(255, 255, 255, 0.2)] backdrop-blur-lg border-none transition-all duration-300 hover:shadow-lg"
+        className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-[rgba(255, 255, 255, 0.2)] backdrop-blur-lg border-none transition-all duration-300 hover:shadow-lg font-super"
         style={{
           backdropFilter: "blur(10px)",
           WebkitBackdropFilter: "blur(10px)",

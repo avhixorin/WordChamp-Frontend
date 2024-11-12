@@ -99,7 +99,7 @@ export default function Welcome() {
   const avatarList = useMemo(() => avatars, []);
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center p-4 overflow-hidden bg-game-bg bg-center bg-cover bg-white">
+    <div className="relative w-full h-full flex items-center justify-center p-4 overflow-hidden bg-game-bg bg-center bg-cover bg-white font-super">
       <div className="absolute top-10 left-10 z-10">
         {muted ? (
           <button
@@ -154,7 +154,7 @@ export default function Welcome() {
                   }`}
                 />
                 <p
-                  className={`mt-2 text-center font-bold text-sm ${
+                  className={`mt-2 text-center  font-bold text-sm ${
                     selectedAvatar === avatar.name
                       ? "text-red-700"
                       : "text-slate-700"

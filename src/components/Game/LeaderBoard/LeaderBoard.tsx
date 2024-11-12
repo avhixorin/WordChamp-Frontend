@@ -38,7 +38,7 @@ const LeaderBoard: React.FC = () => {
   }, [players, gameMode]); 
 
   return (
-    <div className="bg-transparent text-zinc-700 p-6 rounded-lg text-center backdrop-blur-xl w-full">
+    <div className="bg-transparent text-zinc-700 p-6 rounded-lg text-center backdrop-blur-xl w-full font-super">
       <h2 className="text-3xl font-bold mb-4">LeaderBoard</h2>
       <div className="overflow-auto max-h-[300px]">
         {gameMode === GameMode.MULTIPLAYER ? (

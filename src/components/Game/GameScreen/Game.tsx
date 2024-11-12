@@ -81,7 +81,7 @@ const Game: React.FC = () => {
   }
 
   return (
-    <div className="relative flex flex-col lg:flex-row justify-around items-center bg-game-bg1 bg-center bg-fill w-full p-2 lg:p-4 h-full gap-2 lg:gap-4 overflow-y-auto">
+    <div className="relative flex flex-col lg:flex-row justify-around items-center bg-game-bg1 bg-center bg-fill w-full p-2 lg:p-4 h-full gap-2 lg:gap-4 overflow-y-auto font-super">
       <GameOver gameOver={gameOver} handleNewGame={handleNewGame} handleAnotherRound={handleAnotherRound}/> 
       
       {/* Left Sidebar */}

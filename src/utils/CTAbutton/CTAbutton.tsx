@@ -16,7 +16,7 @@ export default function CTAButton({ label, onClick, colour, type, disabled }: Bu
     <motion.button
       type={type}
       disabled={disabled}
-      className="relative overflow-hidden rounded-full px-6 py-2 font-semibold text-white shadow-lg transition-all duration-300 ease-out"
+      className="relative overflow-hidden rounded-full px-6 py-2 font-semibold text-white shadow-lg transition-all duration-300 ease-out font-super"
       style={{
         background: `linear-gradient(45deg, ${colour} 0%, ${colour}80 50%, ${colour}40 100%)`, 
         boxShadow: isHovered

@@ -38,7 +38,7 @@ const ScoreCard: React.FC = () => {
   );
 
   return (
-    <div className="flex flex-col items-center w-full">
+    <div className="flex flex-col items-center w-full font-super">
       {gameMode === GameMode.MULTIPLAYER ? (
         players.length > 0 ? (
           players.map((player, index) => (

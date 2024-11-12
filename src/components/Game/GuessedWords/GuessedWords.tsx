@@ -27,7 +27,7 @@ const GuessedWords: React.FC = () => {
   const guessedWords = gameMode === GameMode.MULTIPLAYER ? MultiPlayerGuessedWords : SoloPlayerGuessedWords;
 
   return (
-    <Card className="w-full flex flex-col items-center bg-transparent py-4 space-y-4 border-none shadow-none">
+    <Card className="w-full flex flex-col items-center bg-transparent py-4 space-y-4 border-none shadow-none font-super">
       <div className="flex flex-wrap justify-center gap-1">
         {guessedWords && guessedWords.length > 0 ? (
           guessedWords.map((word, index) => <WordsCover key={index} word={word} />)

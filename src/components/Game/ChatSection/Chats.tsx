@@ -40,13 +40,13 @@ const ChatSection: React.FC = () => {
 
   return (
     <div
-      className="w-full max-h-60 bg-[rgba(255,255,255,0.1)] backdrop-blur-lg rounded-lg shadow-lg"
+      className="w-full max-h-60 bg-[rgba(255,255,255,0.1)] backdrop-blur-lg rounded-lg shadow-lg font-super"
       style={{
         backdropFilter: "blur(10px)",
         WebkitBackdropFilter: "blur(10px)",
       }}
     >
-      <Card className="h-full flex flex-col bg-transparent">
+      <Card className="h-full flex flex-col bg-transparent font-super">
         <CardHeader className="p-3">
           <CardTitle className="text-lg sm:text-xl md:text-2xl text-slate-800 dark:text-slate-200">
             Chats
@@ -61,12 +61,12 @@ const ChatSection: React.FC = () => {
                   ref={index === messages.length - 1 ? lastMessageRef : null}
                   className="p-2 mb-2 w-[85%] rounded-lg bg-white/20 backdrop-blur-md shadow-md border border-gray-300 dark:border-gray-600"
                 >
-                  <p className="text-sm text-gray-800 font-semibold dark:text-gray-200">{msg.sender.username}</p>
-                  <p className="text-gray-700 dark:text-gray-300">{msg.content}</p>
+                  <p className="text-sm text-gray-800 font-semibold dark:text-gray-200 font-super">{msg.sender.username}</p>
+                  <p className="text-gray-700 dark:text-gray-300 font-super">{msg.content}</p>
                 </div>
               ))
             ) : (
-              <p className="text-gray-500 text-center mt-4">No messages yet.</p>
+              <p className="text-gray-500 text-center mt-4 font-super">No messages yet.</p>
             )}
           </ScrollArea>
           <Separator />

@@ -31,7 +31,7 @@ const AlphabetSection: React.FC = () => {
 
   return (
     <motion.div
-      className="w-full py-4 flex justify-center items-center flex-wrap gap-4"
+      className="w-full py-4 flex justify-center items-center flex-wrap gap-4 font-super"
       variants={containerVariants}
       initial="hidden"
       animate="visible"

@@ -20,7 +20,7 @@ const Page2: React.FC = () => {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-game-bg bg-center p-4">
+    <div className="min-h-screen flex items-center justify-center bg-game-bg bg-center p-4 font-super">
       <button onClick={() => setMuted(!muted)} className="absolute top-10 left-10 z-10">
         {muted ? <VolumeX size={32} stroke="#fdfdfd" /> : <Volume size={32} stroke="#fdfdfd" />}
       </button>

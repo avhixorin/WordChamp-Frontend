@@ -30,7 +30,7 @@ const Profile: React.FC = () => {
 
   return (
     <div
-      className={`w-full ${profileCardClass} py-4 px-4 flex flex-col gap-4 items-center bg-white/10 backdrop-blur-md rounded-lg shadow-lg`}
+      className={`w-full ${profileCardClass} py-4 px-4 flex flex-col gap-4 items-center bg-white/10 backdrop-blur-md rounded-lg shadow-lg font-super`}
     >
       <h2 className="text-2xl font-bold text-teal-600">Game Room Details</h2>
 

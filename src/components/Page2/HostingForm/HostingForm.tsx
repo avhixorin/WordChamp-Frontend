@@ -68,18 +68,18 @@ const HostingForm: React.FC = () => {
             type="text"
             value={room?.roomId || ""}
             readOnly
-            className="text-center text-gray-800 bg-white/60 py-2 px-4 rounded-md border border-gray-300 focus:outline-none"
+            className="text-center text-gray-800 bg-white/60 py-2 px-4 rounded-md border border-gray-300 focus:outline-none font-super"
           />
           <Field
             type="password"
             name="roomPassword"
             placeholder="Room Password"
-            className="text-center text-gray-800 bg-white/60 py-2 px-4 rounded-md border border-gray-300 focus:outline-none"
+            className="text-center text-gray-800 bg-white/60 py-2 px-4 rounded-md border border-gray-300 focus:outline-none font-super"
           />
           <ErrorMessage
             name="roomPassword"
             component="div"
-            className="text-red-600"
+            className="text-red-600 font-super"
           />
           <Field
             type="number"
@@ -87,12 +87,12 @@ const HostingForm: React.FC = () => {
             placeholder="Number of Players (2-3)"
             min="2"
             max="3"
-            className="text-center text-gray-800 bg-white/60 py-2 px-4 rounded-md border border-gray-300 focus:outline-none"
+            className="text-center text-gray-800 bg-white/60 py-2 px-4 rounded-md border border-gray-300 focus:outline-none font-super"
           />
           <ErrorMessage
             name="numOfPlayers"
             component="div"
-            className="text-red-600"
+            className="text-red-600 font-super"
           />
           <CTAButton
             type="submit"
