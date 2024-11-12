@@ -9,9 +9,11 @@ import { useNavigate } from "react-router-dom";
 import SidebarLeft from "./LeftSideBar/LeftSideBar";
 import MainGameSection from "./Mid/Mid";
 import SidebarRight from "./RightSideBar/RightSideBar";
+import useSocket from "@/hooks/connectSocket";
 
 const Game: React.FC = () => {
   const { gameMode } = useSelector((state: RootState) => state.gameMode);
+  const { startSoloGame } = useSocket();
   const [open, setOpen] = useState(false);
   const [muted, setMuted] = useState(false);
   const [powerUpVisible, setPowerUpVisible] = useState(false);
@@ -65,9 +67,15 @@ const Game: React.FC = () => {
   const handleNewGame = () => {
     navigate("/");
   };
+  const { soloPlayer } = useSelector((state: RootState) => state);
+  const handleAnotherRound = () => {
+    setGameOver(false);
+    setTimer(getMaxTimeForDifficulty(difficulty));
+    startSoloGame(soloPlayer);
+  }
   return (
     <div className="relative flex justify-around items-center bg-game-bg1 bg-center bg-cover w-full p-4 h-full gap-2">
-      <GameOver gameOver={gameOver} handleNewGame={handleNewGame} /> 
+      <GameOver gameOver={gameOver} handleNewGame={handleNewGame} handleAnotherRound={handleAnotherRound}/> 
       {/* Left Sidebar */}
       <SidebarLeft handleMuteToggle={handleMuteToggle} muted={muted} />
 

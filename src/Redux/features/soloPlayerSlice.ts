@@ -29,6 +29,9 @@ const soloPlayerSlice = createSlice({
             state.gameString = action.payload;
         },
         addSoloPlayerGuessWord: (state, action: PayloadAction<string>) => {
+            if(state.guessedWords.length > 10){
+                state.guessedWords.shift();
+            }
             state.guessedWords.push(action.payload);
         },
         addSoloPlayerAnswer: (state, action: PayloadAction<Answer>) => {

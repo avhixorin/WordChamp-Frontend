@@ -6,9 +6,10 @@ import CTAButton from "@/utils/CTAbutton/CTAbutton";
 interface GameOverProps {
   gameOver: boolean;
   handleNewGame: () => void;
+  handleAnotherRound: () => void;
 }
 
-const GameOver: React.FC<GameOverProps> = ({ gameOver, handleNewGame }) => {
+const GameOver: React.FC<GameOverProps> = ({ gameOver, handleNewGame, handleAnotherRound }) => {
   const [showRanking, setShowRanking] = useState(false);
 
   useEffect(() => {
@@ -52,6 +53,13 @@ const GameOver: React.FC<GameOverProps> = ({ gameOver, handleNewGame }) => {
               
             >
               <LeaderBoard />
+              <CTAButton
+                type="button"
+                onClick={handleAnotherRound}
+                disabled={false}
+                label="Play Another Round"
+                colour="#1E90FF"
+              />
               <CTAButton
                 type="button"
                 onClick={handleNewGame}
