@@ -20,7 +20,7 @@ const SidebarLeft = ({
       </button>
     </div>
     <ScoreCard />
-    <div className="hidden md:block">
+    <div className="hidden md:block w-full">
 
     <Profile />
     </div>
