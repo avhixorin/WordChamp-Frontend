@@ -135,7 +135,6 @@ const useSocket = () => {
   const handleUpdateScoreResponse = (data: UpdateScoreResponse) => {
     console.log("Inside the host room func");
     if (data.statusCode === 200) {
-      toast.success(data.message);
       if(data.data.guessedWord.verdict === Verdict.CORRECT) {
         toast(data.message, {
           icon: "🎉",
