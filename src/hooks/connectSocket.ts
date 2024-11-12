@@ -36,7 +36,6 @@ let socket: Socket | null = null;
 
 const initializeSocket = (): Socket => {
   const socketURL = import.meta.env.VITE_SOCKET_URL;
-  console.log("The socket URL is: ", socketURL);
   if (!socket) {
     socket = io(socketURL, { autoConnect: false });
   }
@@ -70,7 +69,6 @@ const useSocket = () => {
   };
 
   const handleJoiningResponse = (response: JoinRoomResponse) => {
-    console.log("Joining response:", response);
 
     if (response?.statusCode === 200) {
       toast.success(response.message || "Joined room successfully!");
@@ -86,7 +84,6 @@ const useSocket = () => {
   };
 
   const handleLeaveRoom = (data: LeaveRoomResponse) => {
-    console.log("User left response:", data);
     if (data.statusCode === 200) {
       toast(`${data.message}`, {
         icon: "👋",
@@ -99,7 +96,6 @@ const useSocket = () => {
   };
 
   const handleNewUser = (data: NewUserResponse) => {
-    console.log("New user response:", data);
     toast(`${data.message}`, {
       icon: "👋",
       style: { background: "rgba(0, 255, 0, 0.8)", color: "#fff" },
@@ -108,13 +104,11 @@ const useSocket = () => {
   };
 
   const handleNewMessage = (data: MessageResponse) => {
-    console.log("New message response:", data);
     const { content, sender } = data.data;
     dispatch(addMessage({ content, sender }));
   };
 
   const handleStartGameResponse = (data: StartGameResponse) => {
-    console.log("Start Game Response", data);
     if (data.statusCode === 200) {
       toast.success(data.message);
       if (data.data.gameData)
@@ -126,7 +120,6 @@ const useSocket = () => {
   };
 
   const handleSoloGameStartResponse = (data: SoloGameStartResponse) => {
-    console.log("Solo Game Start Response", data);
     if (data) {
       toast.success("Happy Gaming!", {
         icon: "🤩",
@@ -139,7 +132,6 @@ const useSocket = () => {
   };
 
   const hostRoom = (request: HostRoomRequest) => {
-    console.log("Emitting HOST_ROOM event:", request);
     socket.emit(SOCKET_EVENTS.HOST_ROOM, request);
 
     socket.on(SOCKET_EVENTS.LEAVE_ROOM, (response: LeaveRoomResponse) => {
@@ -160,7 +152,6 @@ const useSocket = () => {
     socket.on(
       SOCKET_EVENTS.UPDATE_SCORE_RESPONSE,
       (data: UpdateScoreResponse) => {
-        console.log("Score update response inside the hostRoom function", data);
         if (data.statusCode === 200) {
           dispatch(setMultiPlayerRoomData(data.data));
         }
@@ -169,7 +160,6 @@ const useSocket = () => {
   };
 
   const joinRoom = (request: JoinRoomRequest) => {
-    console.log("Emitting JOIN_ROOM event:", request);
     socket.emit(SOCKET_EVENTS.JOIN_ROOM, request);
 
     socket.on(SOCKET_EVENTS.LEAVE_ROOM, (response: LeaveRoomResponse) => {
@@ -190,7 +180,6 @@ const useSocket = () => {
     socket.on(
       SOCKET_EVENTS.UPDATE_SCORE_RESPONSE,
       (data: UpdateScoreResponse) => {
-        console.log("Score update response inside the joinRoom function", data);
         if (data.statusCode === 200) {
           dispatch(setMultiPlayerRoomData(data.data));
         }
@@ -200,17 +189,14 @@ const useSocket = () => {
 
   const startGame = (request: StartGameRequest) => {
     if (!request.gameData || !request.gameData.room) return;
-    console.log("Emitting START_GAME event:", request.gameData);
     socket.emit(SOCKET_EVENTS.START_GAME, request);
   };
 
   const sendMessage = (message: MessageRequest) => {
-    console.log("Emitting NEW_MESSAGE event:", message);
     socket.emit(SOCKET_EVENTS.NEW_MESSAGE, message);
   };
 
   const startSoloGame = (user: SoloPlayer) => {
-    console.log("Emitting START_SOLO_GAME event:", user);
     socket.emit(SOCKET_EVENTS.START_SOLO_GAME, user);
 
     socket.on(
@@ -222,7 +208,6 @@ const useSocket = () => {
   };
 
   const updateMultiPlayerUserScore = (data: UpdateScoreRequest) => {
-    console.log("Emitting UPDATE_SCORE event:", data);
     socket.emit(SOCKET_EVENTS.UPDATE_SCORE, data);
   };
 
@@ -236,7 +221,6 @@ const useSocket = () => {
     socket.on(
       SOCKET_EVENTS.UPDATE_SCORE_RESPONSE,
       (data: UpdateScoreResponse) => {
-        console.log("Score update response inside the joinRoom function", data);
         if (data.statusCode === 200) {
           dispatch(setMultiPlayerRoomData(data.data));
         }

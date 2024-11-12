@@ -59,7 +59,6 @@ const Game: React.FC = () => {
   const togglePowerUpMenu = () => setPowerUpVisible((prev) => !prev);
   const handleGameOver = () => {
     setGameOver(true);
-    console.log("Game over!");
   };
   const navigate = useNavigate();
   const [gameOver, setGameOver] = useState(false);

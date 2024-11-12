@@ -8,6 +8,7 @@ import CTAButton from "@/utils/CTAbutton/CTAbutton";
 import { setRoomAction } from "@/Redux/features/multiPlayerUserSlice";
 import { Room, RoomAction } from "@/types/types";
 import { setRoom, setRoomId, setRoomPassword } from "@/Redux/features/multiPlayerDataSlice";
+import toast from "react-hot-toast";
 
 const JoiningForm: React.FC = () => {
   const dispatch = useDispatch();
@@ -28,14 +29,13 @@ const JoiningForm: React.FC = () => {
             roomId: values.roomId,
             roomPassword: values.roomPassword,
           };
-          console.log("Joining Room:", room);
           dispatch(setRoom(room))
           joinRoom({room, user});
           dispatch(setRoomAction(RoomAction.JOINING));
           dispatch(setRoomId(values.roomId));
           dispatch(setRoomPassword(values.roomPassword));
         } else {
-          console.error("User is not logged in");
+          toast.error("User is not logged in");
         }
       }}
     >

@@ -13,6 +13,7 @@ import {
   setRoomPassword,
 } from "@/Redux/features/multiPlayerDataSlice";
 import { setRoomAction } from "@/Redux/features/multiPlayerUserSlice";
+import toast from "react-hot-toast";
 const HostingForm: React.FC = () => {
   const dispatch = useDispatch();
   const { createRoomId } = useRoomID();
@@ -44,11 +45,9 @@ const HostingForm: React.FC = () => {
       validationSchema={validationSchema}
       onSubmit={(values) => {
         if (user) {
-          console.log("The hosting room is: ", room);
           dispatch(setRoomAction(RoomAction.HOSTING));
           dispatch(setMaxRoomPlayers(parseInt(values.numOfPlayers, 10)));
           dispatch(setRoomPassword(values.roomPassword));
-          console.log("The maxGameParticipants are:", maxRoomPlayers);
           if (room) {
             const newRoom: Room = {
               roomId: room.roomId,
@@ -62,7 +61,7 @@ const HostingForm: React.FC = () => {
             });
           }
         } else {
-          console.error("User is not logged in");
+          toast.error("User is not logged in");
         }
       }}
     >

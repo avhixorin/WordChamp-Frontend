@@ -12,7 +12,7 @@ const useMistake = () => {
 
   const isMinorMistake = (primary: string, secondary: string) => {
     if (!primary || !secondary) {
-      console.warn("Words are missing");
+      toast.error("Words are missing");
       return false;
     }
 
@@ -33,7 +33,7 @@ const useMistake = () => {
 
   const isGraveMistake = (primary: string, secondary: string) => {
     if (!primary || !secondary) {
-      console.warn("Words are missing");
+      toast.error("Words are missing");
       return false;
     }
 

@@ -30,7 +30,7 @@ const useValidate = (word: string) => {
       }
       return true; 
     } else {
-      console.warn("Words are missing");
+      toast.error("Words are missing");
       return false;
     }
   };
@@ -58,8 +58,8 @@ const useValidate = (word: string) => {
           });
           return false; 
         }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
-        console.error("Error validating word:", error);
         toast("Unable to validate the word at the moment.", {
           icon: "⚠️",
           style: {

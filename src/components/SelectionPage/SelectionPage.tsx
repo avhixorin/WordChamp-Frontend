@@ -41,9 +41,8 @@ const SelectionPage: React.FC = () => {
   }, [gameMode, room, gameData, startGame, startSoloGame, navigate, soloUser]);
 
   const handleClick = useCallback(() => {
-    console.log("Starting game with difficulty:", localDifficulty);
     startGameBasedOnMode();
-  }, [localDifficulty, startGameBasedOnMode]);
+  }, [ startGameBasedOnMode]);
 
   return (
     <div className="relative w-full h-full flex justify-center items-center overflow-hidden bg-game-bg bg-center bg-cover bg-no-repeat text-zinc-700">
