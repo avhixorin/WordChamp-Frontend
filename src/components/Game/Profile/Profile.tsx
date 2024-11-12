@@ -61,10 +61,10 @@ const Profile: React.FC = () => {
             </div>
 
             {/* Display Players */}
-            <div className="flex flex-col items-center w-full">
+            <div className="flex items-center justify-between">
               <span className="text-lg font-semibold text-gray-800">Players:</span>
               {players.length > 0 ? (
-                <ul className="flex flex-col gap-1">
+                <ul className="flex justify-evenly gap-1">
                   {players.map((player) => (
                     <li key={player.id} className="text-lg text-teal-900">
                       {player.username} - {player.roomAction}
