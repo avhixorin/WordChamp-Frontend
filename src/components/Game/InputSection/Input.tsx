@@ -81,7 +81,9 @@ const InputSection: React.FC = () => {
     if (gameMode === GameMode.SOLO) {
       dispatch(updateSoloPlayerScore(score));
       dispatch(addSoloPlayerAnswer(guessedWordData));
-      dispatch(addSoloPlayerGuessWord(inputWord.toUpperCase()));
+      if(guessedWordData.verdict === Verdict.CORRECT){
+        dispatch(addSoloPlayerGuessWord(inputWord.toUpperCase()));
+      }
     } else {
       dispatch(
         updatePlayerScoreAndAnswer({

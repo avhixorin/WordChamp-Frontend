@@ -46,6 +46,12 @@ const soloPlayerSlice = createSlice({
         removeSoloPlayerPowerUp: (state, action: PayloadAction<string>) => {
             state.powerUps = state.powerUps.filter(powerUp => powerUp.name !== action.payload);
         },
+        resetSoloPlayerScore: (state) => {
+            state.score = 0;
+        },
+        resetSoloPlayerGuessWords: (state) => {
+            state.guessedWords = [];
+        },
         resetSoloPlayer: () => initialState,
     },
 });
@@ -59,6 +65,8 @@ export const {
     updateSoloPlayerScore, 
     addSoloPlayerPowerUp, 
     removeSoloPlayerPowerUp,
+    resetSoloPlayerScore,
+    resetSoloPlayerGuessWords,
     resetSoloPlayer
 } = soloPlayerSlice.actions;
 export default soloPlayerSlice.reducer;

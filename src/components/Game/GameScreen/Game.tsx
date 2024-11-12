@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../../../index.css";
 import useSound from "@/hooks/useSound";
 import { Difficulty, GameMode } from "@/types/types";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/Redux/store/store";
 import GameOver from "../GameOver/GameOver";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,7 @@ import SidebarLeft from "./LeftSideBar/LeftSideBar";
 import MainGameSection from "./Mid/Mid";
 import SidebarRight from "./RightSideBar/RightSideBar";
 import useSocket from "@/hooks/connectSocket";
+import { resetSoloPlayerGuessWords, resetSoloPlayerScore } from "@/Redux/features/soloPlayerSlice";
 
 const Game: React.FC = () => {
   const { gameMode } = useSelector((state: RootState) => state.gameMode);
@@ -68,9 +69,12 @@ const Game: React.FC = () => {
     navigate("/");
   };
   const { soloPlayer } = useSelector((state: RootState) => state);
+  const dispatch = useDispatch();
   const handleAnotherRound = () => {
     setGameOver(false);
     setTimer(getMaxTimeForDifficulty(difficulty));
+    dispatch(resetSoloPlayerScore());
+    dispatch(resetSoloPlayerGuessWords());
     startSoloGame(soloPlayer);
   }
   return (
