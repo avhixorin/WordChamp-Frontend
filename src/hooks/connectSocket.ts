@@ -19,10 +19,10 @@ import {
   StartGameResponse,
   UpdateScoreRequest,
   UpdateScoreResponse,
+  Verdict,
 } from "@/types/types";
 import toast from "react-hot-toast";
 import {
-  addMultiPlayerGuessedWord,
   addPlayers,
   removePlayer,
   setMaxRoomPlayers,
@@ -136,6 +136,43 @@ const useSocket = () => {
     console.log("Inside the host room func");
     if (data.statusCode === 200) {
       toast.success(data.message);
+      if(data.data.guessedWord.verdict === Verdict.CORRECT) {
+        toast(data.message, {
+          icon: "🎉",
+          style: {
+            background: "rgba(255, 255, 255, 0.1)",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            opacity: 0.9,
+            color: "#fff",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            backdropFilter: "blur(50px)",
+          },
+        });
+      }else if(data.data.guessedWord.verdict === Verdict.INCORRECT) {
+        toast(data.message, {
+          icon: "😬",
+          style: {
+            background: "rgba(255, 255, 0, 0.1)",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            opacity: 0.9,
+            color: "#fff",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            backdropFilter: "blur(50px)",
+          },
+        });
+      }else{
+        toast(data.message, {
+          icon: "🤔",
+          style: {
+            background: "rgba(255, 0, 0, 0.1)",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            opacity: 0.9,
+            color: "#fff",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            backdropFilter: "blur(50px)",
+          },
+        });
+      }
       dispatch(
         updatePlayerScoreAndAnswer({
           playerId: data.data.player.id,

@@ -65,15 +65,17 @@ const multiPlayerDataSlice = createSlice({
                     const wordAlreadyGuessed = state.guessedWords.some(
                         answer => answer === action.payload.guessedWord.word
                     );
-
                     if (!wordAlreadyGuessed) {
-                        player.answers.push(action.payload.guessedWord);
+                        if (state.guessedWords.length >= 10) {
+                            state.guessedWords.shift(); 
+                        }
                         state.guessedWords.push(action.payload.guessedWord.word);
+                        player.answers.push(action.payload.guessedWord);
                     }
                 }
                 player.score += action.payload.score;
             }
-        },               
+        },                       
         addMultiPlayerGuessedWord: (state, action: PayloadAction<string>) => {
             if (!state.guessedWords.includes(action.payload)) {
                 state.guessedWords.push(action.payload);
