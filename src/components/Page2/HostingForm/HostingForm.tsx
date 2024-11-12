@@ -19,9 +19,6 @@ const HostingForm: React.FC = () => {
   const { createRoomId } = useRoomID();
   const { hostRoom } = useSocket();
   const { room } = useSelector((state: RootState) => state.multiPlayerData);
-  const { maxRoomPlayers } = useSelector(
-    (state: RootState) => state.multiPlayerData
-  );
   const { multiPlayerUser: user } = useSelector((state: RootState) => state);
   const validationSchema = Yup.object({
     roomPassword: Yup.string().required("Room password is required"),
