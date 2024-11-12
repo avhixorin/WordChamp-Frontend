@@ -22,7 +22,7 @@ const WaitingRoom: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="w-full h-full bg-game-bg bg-center bg-no-repeat bg-cover flex justify-center items-center font-super">
+    <div className="w-full h-full bg-game-bg bg-center bg-no-repeat bg-cover flex justify-center items-center font-super overflow-y-auto">
       <div className="bg-white/30 backdrop-blur-lg rounded-xl p-8 shadow-lg space-y-6 w-full max-w-lg animate-fadeIn">
         <h1 className="text-4xl text-center font-semibold text-zinc-700">Waiting Room</h1>
         <p className="text-center text-lg text-zinc-700">Please wait for other players to join</p>

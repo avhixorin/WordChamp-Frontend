@@ -45,7 +45,7 @@ const SelectionPage: React.FC = () => {
   }, [ startGameBasedOnMode]);
 
   return (
-    <div className="relative w-full h-full flex justify-center items-center overflow-hidden bg-game-bg bg-center bg-cover bg-no-repeat text-zinc-700 font-super">
+    <div className="relative w-full h-full flex justify-center items-center overflow-hidden bg-game-bg bg-center bg-cover bg-no-repeat text-zinc-700 font-super overflow-y-auto">
       <div
         className="w-full max-w-lg max-h-96 bg-[rgba(255,255,255,0.1)] backdrop-blur-lg rounded-lg shadow-lg p-6"
         style={{
