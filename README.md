@@ -21,6 +21,6 @@ Word Champ is an engaging word quiz game designed to test and improve your vocab
 - **State Management**: Redux
 
 ## 🌐 Try It Out!
-**Play Now**: [word-champ.vercel.app](https://word-champ.vercel.app)
+👉 [Play Now!](https://word-champ.vercel.app/) 🚀
 
 **Get In Touch**: Feel free to reach out with suggestions or feedback. Let’s make Word Champ even better!
